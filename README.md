@@ -1,6 +1,8 @@
 # Tabs
 
-TODO: Write a gem description
+Tabs is a redis-backed metrics tracker that supports counts, sums,
+averages, and min/max stats sliceable by the minute, hour, day, week,
+month, and year.
 
 ## Installation
 
@@ -18,7 +20,16 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+To count events, simply call the `increment` or `record` methods to
+write an event to the store.
+
+### Increment a counter
+
+Tabs.increment(key)
+
+### Record a value
+
+Tabs.record(key, 37)
 
 ## Contributing
 
