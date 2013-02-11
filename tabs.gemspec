@@ -19,7 +19,10 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_dependency "redis", "~> 3.0.2"
+  gem.add_dependency "activesupport", "~> 3.2.11"
 
+  gem.add_development_dependency "pry"
   gem.add_development_dependency "rspec"
+  gem.add_development_dependency "fakeredis"
 
 end

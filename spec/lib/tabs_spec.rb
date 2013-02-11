@@ -4,9 +4,12 @@ describe Tabs do
 
   describe "#create_metric" do
 
-    it "returns true if the metric type is valid" do
-      expect(Tabs.create_metric("foo", "counter")).to be_true
-      expect(Tabs.create_metric("foo", "value")).to be_true
+    it "adds the expected list key for a counter metric" do
+      Tabs.create_metric("foo", "counter")
+    end
+
+    it "adds the expected list key for a value metric" do
+      Tabs.create_metric("foo", "value")
     end
 
     it "raises an exception if the metric type is invalid" do
@@ -31,10 +34,10 @@ describe Tabs do
 
   end
 
-  describe "#get_values" do
+  describe "#stats" do
 
-    it "should return []" do
-      expect(Tabs.get_values("foo")).to eq([])
+    it "returns []" do
+      expect(Tabs.stats("foo")).to eq([])
     end
 
   end
