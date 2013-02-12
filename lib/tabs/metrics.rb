@@ -12,9 +12,9 @@ module Tabs
       @redis ||= Config.redis
     end
 
-    def get_metric(key)
+    def metric(key)
       metrics = get("metrics")
-      type = metrics.find { |m| m.key == key }
+      type = metrics[key]
       metric_klass(type).new(key)
     end
 

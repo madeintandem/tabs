@@ -30,6 +30,13 @@ describe Tabs::Metrics do
 
   end
 
-  
+  describe "#metric" do
+
+    it "returns the expected metric object" do
+      Tabs::Metrics.create("foo", "counter")
+      expect(Tabs::Metrics.metric("foo")).to be_a_kind_of(Tabs::Metrics::Counter)
+    end
+
+  end
 
 end
