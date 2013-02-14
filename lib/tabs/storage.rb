@@ -18,6 +18,10 @@ module Tabs
       redis.rpush("tabs:#{key}", value)
     end
 
+    def sadd(key, *values)
+      redis.sadd("tabs:#{key}", *values)
+    end
+
     def hget(key, field)
       redis.hget("tabs:#{key}", field)
     end

@@ -5,6 +5,9 @@ require "tabs/version"
 require "tabs/config"
 require "tabs/storage"
 
+require "tabs/stats/writer"
+require "tabs/stats/reader"
+
 require "tabs/metrics/counter"
 require "tabs/metrics/value"
 
