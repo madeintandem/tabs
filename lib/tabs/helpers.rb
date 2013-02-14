@@ -6,7 +6,7 @@ module Tabs
       timestamps = []
       dt = period.first
       while dt <= period.last
-        timestamps << dt.to_time
+        timestamps << dt.utc
         dt += 1.send(resolution.to_sym)
       end
       timestamps
@@ -21,7 +21,8 @@ module Tabs
     def extract_date_from_key(stat_key, resolution)
       pattern = Tabs::RESOLUTIONS[resolution]
       date_str = stat_key.split(":").last
-      DateTime.strptime(date_str, pattern)
+      now = DateTime.strptime(date_str, pattern)
+      Time.utc(now.year, now.month, now.day, now.hour, 0, 0)
     end
 
   end

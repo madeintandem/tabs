@@ -25,8 +25,8 @@ module Tabs
         values = mget(*keys).map(&:to_i)
         pairs = dates.zip(values)
         filtered_pairs = pairs.find_all { |p| period.cover?(p[0]) }
-        fill_missing_dates(period, filtered_pairs, resolution)
-        filtered_pairs.map { |p| Hash[p] }
+        filtered_pairs = fill_missing_dates(period, filtered_pairs, resolution)
+        filtered_pairs.map { |p| Hash[[p]] }
       end
 
       private
@@ -41,7 +41,6 @@ module Tabs
       def fill_missing_dates(period, date_value_pairs, resolution)
         timestamps = Hash[timestamps_in_period(period, resolution).map { |ts| [ts, 0] }]
         merged = timestamps.merge(Hash[date_value_pairs])
-        binding.pry
         merged.to_a
       end
 
