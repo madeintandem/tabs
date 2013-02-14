@@ -18,8 +18,16 @@ module Tabs
       redis.rpush("tabs:#{key}", value)
     end
 
+    def hget(key, field)
+      redis.hget("tabs:#{key}", field)
+    end
+
     def hset(key, field, value)
       redis.hset("tabs:#{key}", field, value)
+    end
+
+    def hdel(key, field)
+      redis.hdel("tabs:#{key}", field)
     end
 
     def hkeys(key)
