@@ -4,9 +4,7 @@ require "redis"
 require "tabs/version"
 require "tabs/config"
 require "tabs/storage"
-
-require "tabs/stats/writer"
-require "tabs/stats/reader"
+require "tabs/helpers"
 
 require "tabs/metrics/counter"
 require "tabs/metrics/value"
@@ -21,6 +19,14 @@ module Tabs
   class MetricTypeMismatchError < Exception; end
 
   METRIC_TYPES = ["counter", "value"]
+
+  RESOLUTIONS = {
+    hour:   "%Y-%m-%d-%H",
+    day:    "%Y-%m-%d",
+    week:   "%Y-%U",
+    month:  "%Y-%m",
+    year:   "%Y"
+  }
 
   def configure
     yield(Config)

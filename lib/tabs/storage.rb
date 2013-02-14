@@ -6,12 +6,25 @@ module Tabs
       @redis ||= Config.redis
     end
 
+    def exists(key)
+      redis.get("tabs:#{key}")
+    end
+
     def get(key)
       redis.get("tabs:#{key}")
     end
 
+    def mget(*keys)
+      prefixed_keys = keys.map { |k| "tabs:#{k}" }
+      redis.mget(*prefixed_keys)
+    end
+
     def set(key, value)
       redis.set("tabs:#{key}", value)
+    end
+
+    def incr(key)
+      redis.incr("tabs:#{key}")
     end
 
     def rpush(key, value)
@@ -20,6 +33,10 @@ module Tabs
 
     def sadd(key, *values)
       redis.sadd("tabs:#{key}", *values)
+    end
+
+    def smembers(key)
+      redis.smembers("tabs:#{key}")
     end
 
     def hget(key, field)
@@ -36,6 +53,10 @@ module Tabs
 
     def hkeys(key)
       redis.hkeys("tabs:#{key}")
+    end
+
+    def hincr(key, field)
+      redis.hincr("tabs:#{key}", field)
     end
 
   end
