@@ -89,6 +89,13 @@ describe Tabs do
       lambda { Tabs.increment_counter("foo") }.should raise_error(Tabs::MetricTypeMismatchError)
     end
 
+    it "calls increment on the metric" do
+      metric = Tabs.create_metric("foo", "counter")
+      Tabs.stub(get_metric: metric)
+      metric.should_receive(:increment)
+      Tabs.increment_counter("foo")
+    end
+
   end
 
   describe "#increment_counter" do
@@ -100,6 +107,13 @@ describe Tabs do
     it "raises a Tabs::MetricTypeMismatchError if the metric is the wrong type" do
       Tabs.create_metric("foo", "counter")
       lambda { Tabs.record_value("foo", 27) }.should raise_error(Tabs::MetricTypeMismatchError)
+    end
+
+    it "calls record on the metric" do
+      metric = Tabs.create_metric("foo", "value")
+      Tabs.stub(get_metric: metric)
+      metric.should_receive(:record).with(42)
+      Tabs.record_value("foo", 42)
     end
 
   end
