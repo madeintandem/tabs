@@ -33,6 +33,7 @@ describe Tabs::Metrics::Counter do
       counter.increment
       Timecop.freeze(now + 6.hours)
       counter.increment
+      Timecop.freeze(now)
       expect(counter.stats(now..(now + 7.hours), :hour)).to include({ (now + 3.hours) => 1 })
     end
 
