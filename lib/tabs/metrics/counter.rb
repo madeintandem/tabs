@@ -13,6 +13,7 @@ module Tabs
       def increment
         timestamp = Time.now.utc
         Tabs::RESOLUTIONS.each do |name, pattern|
+          timestamp = timestamp.beginning_of_week if name == :week
           increment_resolution(name, pattern, timestamp)
         end
         true

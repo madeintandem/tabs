@@ -23,7 +23,7 @@ module Tabs
   RESOLUTIONS = {
     hour:   "%Y-%m-%d-%H",
     day:    "%Y-%m-%d",
-    week:   "%Y-%U",
+    week:   "%Y-%W",
     month:  "%Y-%m",
     year:   "%Y"
   }
