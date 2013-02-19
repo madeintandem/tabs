@@ -17,7 +17,7 @@ module Tabs
       end
 
       def normalize(ts)
-        Time.new(ts.year, ts.month, ts.date).beginning_of_week
+        Time.utc(ts.year, ts.month, ts.day).beginning_of_week
       end
 
     end

@@ -15,7 +15,7 @@ module Tabs
       end
 
       def normalize(ts)
-        Time.new(ts.year, ts.month, ts.date, ts.hour)
+        Time.utc(ts.year, ts.month, ts.day, ts.hour)
       end
 
     end
