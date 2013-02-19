@@ -1,6 +1,7 @@
 module Tabs
   module Resolutions
     module Hour
+      extend self
 
       PATTERN = "%Y-%m-%d-%H"
 
@@ -10,7 +11,11 @@ module Tabs
 
       def deserialize(str)
         dt = DateTime.strptime(str, PATTERN)
-        Time.new(dt.year, dt.month, dt.date, dt.hour)
+        self.normalize(dt)
+      end
+
+      def normalize(ts)
+        Time.new(ts.year, ts.month, ts.date, ts.hour)
       end
 
     end

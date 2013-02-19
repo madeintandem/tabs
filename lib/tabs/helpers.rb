@@ -2,38 +2,25 @@ module Tabs
   module Helpers
     extend self
 
-    def timestamps_in_period(period, resolution)
-      period = set_week_period_to_mondays(period) if resolution == :week
-      timestamps = []
+    def timestamp_range(period, resolution)
+      period = normalize_period(period, resolution)
       dt = period.first
-      while dt <= period.last
-        timestamps << dt.utc
-        dt += 1.send(resolution.to_sym)
-      end
-      timestamps
+      Hash[([].tap do |arr|
+        while (dt = dt + 1.send(resolution)) <= period.last
+          arr << dt.utc
+        end
+      end).map { |ts| [ts, 0] }]
     end
 
-    def set_week_period_to_mondays(period)
-      period_start = period.first.beginning_of_week
-      period_end = period.last.beginning_of_week
-      (period_start..period_end)
-    end
-
-    def normalize_period(period)
-      period_start = Time.utc(period.first.year, period.first.month, period.first.day, period.first.hour, 0, 0)
-      period_end = Time.utc(period.last.year, period.last.month, period.last.day, period.last.hour, 0, 0)
+    def normalize_period(period, resolution)
+      period_start = Tabs::Resolution.normalize(resolution, period.first)
+      period_end = Tabs::Resolution.normalize(resolution, period.last)
       (period_start..period_end)
     end
 
     def extract_date_from_key(stat_key, resolution)
-      pattern = Tabs::RESOLUTIONS[resolution]
       date_str = stat_key.split(":").last
-      if resolution == :week && date_str =~ /00$/
-        year = date_str.split("-")[0]
-        date_str = "#{year}-01"
-      end
-      date = DateTime.strptime(date_str, pattern)
-      Time.utc(date.year, date.month, date.day, date.hour, 0, 0)
+      Tabs::Resolution.deserialize(resolution, date_str)
     end
 
   end

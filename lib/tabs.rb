@@ -6,6 +6,7 @@ require "tabs/config"
 require "tabs/storage"
 require "tabs/helpers"
 
+require "tabs/resolution"
 require "tabs/resolutions/minute"
 require "tabs/resolutions/hour"
 require "tabs/resolutions/day"

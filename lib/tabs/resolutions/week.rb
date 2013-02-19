@@ -1,6 +1,7 @@
 module Tabs
   module Resolutions
     module Week
+      extend self
 
       PATTERN = "%Y-%W"
 
@@ -12,8 +13,11 @@ module Tabs
         year, week = str.split("-").map(&:to_i)
         week = 1 if week == 0
         dt = DateTime.strptime("#{year}-#{week}", PATTERN)
-        dt = dt.beginning_of_week
-        Time.now(dt.year, dt.month, dt.date)
+        self.normalize(dt)
+      end
+
+      def normalize(ts)
+        Time.new(ts.year, ts.month, ts.date).beginning_of_week
       end
 
     end

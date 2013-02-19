@@ -12,15 +12,14 @@ module Tabs
 
       def increment
         timestamp = Time.now.utc
-        Tabs::RESOLUTIONS.each do |name, pattern|
-          timestamp = timestamp.beginning_of_week if name == :week
-          increment_resolution(name, pattern, timestamp)
+        Tabs::RESOLUTIONS.each do |resolution|
+          increment_resolution(resolution, timestamp)
         end
         true
       end
 
       def stats(period, resolution)
-        period = normalize_period(period)
+        period = normalize_period(period, resolution)
         keys = smembers("stat:keys:#{key}:#{resolution}")
         dates = keys.map { |k| extract_date_from_key(k, resolution) }
         values = mget(*keys).map(&:to_i)
@@ -32,16 +31,16 @@ module Tabs
 
       private
 
-      def increment_resolution(resolution, pattern, timestamp)
-        formatted_time = timestamp.strftime(pattern)
+      def increment_resolution(resolution, timestamp)
+        formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
         stat_key = "stat:value:#{key}:#{formatted_time}"
         sadd("stat:keys:#{key}:#{resolution}", stat_key)
         incr(stat_key)
       end
 
       def fill_missing_dates(period, date_value_pairs, resolution)
-        timestamps = Hash[timestamps_in_period(period, resolution).map { |ts| [ts, 0] }]
-        merged = timestamps.merge(Hash[date_value_pairs])
+        all_timestamps = timestamp_range(period, resolution)
+        merged = all_timestamps.merge(Hash[date_value_pairs])
         merged.to_a
       end
 
