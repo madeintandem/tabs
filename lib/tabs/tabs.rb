@@ -50,6 +50,7 @@ module Tabs
 
   def drop_metric(key)
     hdel "metrics", key
+    # TODO: Need to finish this
   end
 
   def list_metrics
