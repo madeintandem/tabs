@@ -32,33 +32,43 @@ describe Tabs::Metrics::Counter do
       counter.increment
       Timecop.freeze(now + 6.send(time_unit))
       counter.increment
+      counter.increment
       Timecop.freeze(now)
     end
 
     it "returns the expected results for an hourly counter" do
       create_span(:hours)
-      expect(counter.stats(now..(now + 7.hours), :hour)).to include({ (now + 3.hours) => 1 })
+      stats = counter.stats(now..(now + 7.hours), :hour)
+      expect(stats).to include({ (now + 3.hours) => 1 })
+      expect(stats).to include({ (now + 6.hours) => 2 })
     end
 
     it "returns the expected results for a daily counter" do
       create_span(:days)
-      expect(counter.stats(now..(now + 7.days), :day)).to include({ (now + 3.days) => 1 })
+      stats = counter.stats(now..(now + 7.days), :day)
+      expect(stats).to include({ (now + 3.days) => 1 })
+      expect(stats).to include({ (now + 6.days) => 2 })
     end
 
     it "returns the expected results for a weekly counter" do
       create_span(:weeks)
-      target_date = (now + 3.weeks).beginning_of_week
-      expect(counter.stats(now..(now + 7.weeks), :week)).to include({ target_date => 1 })
+      stats = counter.stats(now..(now + 7.weeks), :week)
+      expect(stats).to include({ (now + 3.weeks).beginning_of_week => 1 })
+      expect(stats).to include({ (now + 6.weeks).beginning_of_week => 2 })
     end
 
     it "returns the expected results for a monthly counter" do
       create_span(:months)
-      expect(counter.stats(now..(now + 7.months), :month)).to include({ (now + 3.months) => 1 })
+      stats = counter.stats(now..(now + 7.months), :month)
+      expect(stats).to include({ (now + 3.months) => 1 })
+      expect(stats).to include({ (now + 6.months) => 2 })
     end
 
     it "returns the expected results for a yearly counter" do
       create_span(:years)
-      expect(counter.stats(now..(now + 7.years), :year)).to include({ (now + 3.years) => 1 })
+      stats = counter.stats(now..(now + 7.years), :year)
+      expect(stats).to include({ (now + 3.years) => 1 })
+      expect(stats).to include({ (now + 6.years) => 2 })
     end
 
   end

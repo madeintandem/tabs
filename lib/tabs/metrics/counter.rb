@@ -33,7 +33,7 @@ module Tabs
 
       def increment_resolution(resolution, timestamp)
         formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-        stat_key = "stat:value:#{key}:#{formatted_time}"
+        stat_key = "stat:value:#{key}:count:#{formatted_time}"
         sadd("stat:keys:#{key}:#{resolution}", stat_key)
         incr(stat_key)
       end

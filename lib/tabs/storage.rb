@@ -56,7 +56,11 @@ module Tabs
     end
 
     def hincr(key, field)
-      redis.hincr("tabs:#{key}", field)
+      redis.hincrby("tabs:#{key}", field, 1)
+    end
+
+    def hincrby(key, field, value)
+      redis.hincrby("tabs:#{key}", field, value)
     end
 
   end
