@@ -35,14 +35,12 @@ module Tabs
       private
 
       def update_values(stat_key, value)
-        #redis.multi do
-          hash = get_current_hash(stat_key)
-          increment(hash, value)
-          update_min(hash, value)
-          update_max(hash, value)
-          update_avg(hash)
-          set(stat_key, JSON.generate(hash))
-        #end
+        hash = get_current_hash(stat_key)
+        increment(hash, value)
+        update_min(hash, value)
+        update_max(hash, value)
+        update_avg(hash)
+        set(stat_key, JSON.generate(hash))
       end
 
       def get_current_hash(stat_key)
