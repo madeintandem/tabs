@@ -1,5 +1,6 @@
 require "active_support/all"
 require "redis"
+require "json/ext"
 
 require "tabs/version"
 require "tabs/config"

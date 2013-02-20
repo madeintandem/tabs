@@ -38,12 +38,6 @@ module Tabs
         incr(stat_key)
       end
 
-      def fill_missing_dates(period, date_value_pairs, resolution)
-        all_timestamps = timestamp_range(period, resolution)
-        merged = all_timestamps.merge(Hash[date_value_pairs])
-        merged.to_a
-      end
-
     end
   end
 end
