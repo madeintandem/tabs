@@ -5,7 +5,7 @@ describe Tabs::Metrics::Counter do
   let(:metric) { Tabs.create_metric("foo", "counter") }
   let(:now) { Time.utc(2000, 1, 1, 0, 0) }
 
-  describe ".increment" do
+  describe "incrementing stats" do
 
     it "increments the value for the expected periods" do
       Timecop.freeze(now)
@@ -16,7 +16,7 @@ describe Tabs::Metrics::Counter do
     end
   end
 
-  describe ".stats" do
+  describe "retrieving stats" do
 
     before do
       Timecop.freeze(now)
@@ -57,13 +57,6 @@ describe Tabs::Metrics::Counter do
       expect(stats).to include({ (now + 6.days) => 2 })
     end
 
-    it "returns the expected results for a weekly metric" do
-      create_span(:weeks)
-      stats = metric.stats(now..(now + 7.weeks), :week)
-      expect(stats).to include({ (now + 3.weeks).beginning_of_week => 1 })
-      expect(stats).to include({ (now + 6.weeks).beginning_of_week => 2 })
-    end
-
     it "returns the expected results for a monthly metric" do
       create_span(:months)
       stats = metric.stats(now..(now + 7.months), :month)
@@ -76,6 +69,34 @@ describe Tabs::Metrics::Counter do
       stats = metric.stats(now..(now + 7.years), :year)
       expect(stats).to include({ (now + 3.years) => 1 })
       expect(stats).to include({ (now + 6.years) => 2 })
+    end
+
+    it "returns zeros for time periods which do not have any events" do
+      create_span(:days)
+      stats = metric.stats(now..(now + 7.days), :day)
+      expect(stats).to include({ (now + 1.day) => 0 })
+    end
+
+    context "for weekly metrics" do
+
+      let(:period) do
+        (now - 2.days)..((now + 7.weeks) + 2.days)
+      end
+
+      it "returns the expected results for a weekly metric" do
+        create_span(:weeks)
+        stats = metric.stats(period, :week)
+        expect(stats).to include({ (now + 3.weeks).beginning_of_week => 1 })
+        expect(stats).to include({ (now + 6.weeks).beginning_of_week => 2 })
+      end
+
+      it "normalizes the period to the first day of the week" do
+        create_span(:weeks)
+        stats = metric.stats(period, :week)
+        expect(stats.first.keys[0]).to eq(period.first.beginning_of_week)
+        expect(stats.last.keys[0]).to eq(period.last.beginning_of_week)
+      end
+
     end
 
   end

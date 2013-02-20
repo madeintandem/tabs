@@ -6,6 +6,7 @@ module Tabs
       period = normalize_period(period, resolution)
       dt = period.first
       Hash[([].tap do |arr|
+        arr << dt
         while (dt = dt + 1.send(resolution)) <= period.last
           arr << dt.utc
         end
