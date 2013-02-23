@@ -55,7 +55,12 @@ module Tabs
 
   def drop_metric(key)
     hdel "metrics", key
-    # TODO: Need to finish this
+    Tabs::RESOLUTIONS.each do |resolution|
+      stat_key = "stat:keys:#{key}:#{resolution}"
+      keys = smembers()
+      del(*keys)
+      del stat_key
+    end
   end
 
   def list_metrics

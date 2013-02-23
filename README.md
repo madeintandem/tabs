@@ -1,8 +1,6 @@
 # Tabs
 
-Tabs is a redis-backed metrics tracker that supports counts, sums,
-averages, and min/max stats sliceable by the minute, hour, day, week,
-month, and year.
+Tabs is a redis-backed metrics tracker that supports counts, sums, averages, and min/max stats sliceable by the minute, hour, day, week, month, and year.
 
 ## Installation
 
@@ -20,49 +18,94 @@ Or install it yourself as:
 
 ## Usage
 
-Metrics come in two flavors: coutners and values.
+Metrics come in two flavors: counters and values.
 
 ### Counter Metrics
 
-A counter metric simply records the number of events that occur within a given timeframe.  To create a counter metric called ‘foobar’, simply call:
+A counter metric simply records the number of events that occur within a given timeframe.  To create a counter metric called ‘website-visits’, simply call:
 
-    Tabs.create_metric(“foobar”, “counter”)
+    Tabs.create_metric(“website-visits”, “counter”)
     
-This will set up the metric in the 
+This will set up the metric in the database.
 
 To increment a metric counter, simply call:
 
-    Tabs.increment_counter(“foobar”)
+    Tabs.increment_counter(“website-visits”)
 
-To retrieve the counts for a given time period just call:
+To retrieve the counts for a given time period just call `Tabs#get_stats` with the name of the metric, a range of times defining the period for which you want stats, and the resolution at which the data should be aggregated.
 
-    Tabs.get_stats(“foobar”, (Time.now - 10.days)..(Time.now), :hour)
+    Tabs.get_stats(“website-visits”, (Time.now - 10.days)..Time.now, :hour)
     
-This will return stats for the last 10 days by hour in a format like this:
+This will return stats for the last 10 days by hour as an array of hashes in which the keys are an instance of `Time` and the value is the count for that time.
 
     [
-      { 2000-01-01 00:00:00 UTC => 1},
+      { 2000-01-01 00:00:00 UTC => 1 },
       { 2000-01-01 01:00:00 UTC => 0 },
       { 2000-01-01 02:00:00 UTC => 10 },
       { 2000-01-01 03:00:00 UTC => 1 },
       { 2000-01-01 04:00:00 UTC => 0 },
       { 2000-01-01 05:00:00 UTC => 0 },
       { 2000-01-01 06:00:00 UTC => 3 },
-      { 2000-01-01 07:00:00 UTC => 0 }
+      { 2000-01-01 07:00:00 UTC => 0 },
+      ...
     ]
+    
+Times for the given period in which no events occurred will be “filled in” with a zero value to make visualizations easier.
+
+The `Time` keys are also normalized.  For example, in hour resolution, the minutes and seconds of the `Time` object are set to 00:00.  Likewise for the week resolution, the day is set to the first day of the week.
 
 ### Value Metrics
 
-To count events, simply call the `increment` or `record` methods to
-write an event to the store.
+Value metrics take a value and record the min, max, avg, and sum for a given time resolution.  Creating a value metric is easy:
 
-### Increment a counter
+    Tabs.create_metric(“new-user-age”, “value”)
+    
+To record a value, simply call `Tabs#record_value`.
 
-Tabs.increment(key)
+    Tabs.record_value(“new-user-age”, 32)
+    
+Retrieving the stats for a value metric is just like retrieving a counter metric.
 
-### Record a value
+    Tabs.get_stats(“new-user-age”, (Time.now - 6.months)..Time.now, :month)
+    
+This will return a familiar value, but with an expanded set of values.
 
-Tabs.record(key, 37)
+    [
+      { 2000-01-01 00:00:00 UTC => { min: 19, max: 54, sum: 226, avg: 38 } },
+      { 2000-02-01 01:00:00 UTC => { min: 0, max: 0, sum: 0, avg: 0 } },
+      { 2000-03-01 02:00:00 UTC => { min: 22, max: 34, sum: 180, avg: 26 } },
+      ...
+    ]
+
+### Resolutions
+
+When tabs increments a counter or records a value it does so for each of the following “resolutions”.  You may supply any of these as the last argument to the `Tabs#get_stats` method.
+
+    :minute, :hour, :day, :week, :month, :year
+
+It automatically aggregates multiple events for the same period.  For instance when you increment a counter metric, 1 will be added for each of the resolutions for the current time.  Repeating the event 5 minutes later will increment a different minute slot, but the same hour, date, week, etc.  When you retrieve metrics, all timestamps will be in UTC.
+
+### Drop a Metric
+
+To drop a metric, just call `Tabs#drop_metric`
+
+    Tabs.drop_metric(“website-visits”)
+    
+This will drop all recorded values for the metric so it may not be un-done...be careful.
+
+### Configuration
+
+There really isn’t much to configure with Tabs, it just works out of the box.  You can use the following configure block to set the Redis connection instance that Tabs will use.
+
+    Tabs.configure do |config|
+    
+      # set it to an existing connection
+      config.redis = Redis.current
+      
+      # pass a config hash that will be passed to Redis.new
+      config.redis = { :host => 'localhost', :port => 6379 }
+      
+    end
 
 ## Contributing
 
