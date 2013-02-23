@@ -44,6 +44,11 @@ module Tabs
     metric_klass(type).new(key)
   end
 
+  def get_stats(key, period, resolution)
+    metric = get_metric(key)
+    metric.stats(period, resolution)
+  end
+
   def metric_type(key)
     hget "metrics", key
   end
