@@ -53,6 +53,14 @@ module Tabs
     hget "metrics", key
   end
 
+  def list_metrics
+    hkeys "metrics"
+  end
+
+  def metric_exists?(key)
+    list_metrics.include? key
+  end
+
   def drop_metric(key)
     hdel "metrics", key
     Tabs::RESOLUTIONS.each do |resolution|
@@ -61,14 +69,6 @@ module Tabs
       del(keys)
       del stat_key
     end
-  end
-
-  def list_metrics
-    hkeys "metrics"
-  end
-
-  def metric_exists?(key)
-    list_metrics.include? key
   end
 
   private

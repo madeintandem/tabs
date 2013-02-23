@@ -125,4 +125,26 @@ describe Tabs do
 
   end
 
+  describe "#list_metrics" do
+
+    it "lists all metrics that are defined" do
+      Tabs.create_metric("foo", "counter")
+      Tabs.create_metric("bar", "counter")
+      Tabs.create_metric("baz", "counter")
+      expect(Tabs.list_metrics).to eq(["foo", "bar", "baz"])
+    end
+    
+  end
+
+  describe "#metric_type" do
+
+    it "returns the type of a given metric" do
+      Tabs.create_metric("foo", "counter")
+      Tabs.create_metric("bar", "value")
+      expect(Tabs.metric_type("foo")).to eq("counter")
+      expect(Tabs.metric_type("bar")).to eq("value")
+    end
+
+  end
+
 end
