@@ -23,6 +23,11 @@ module Tabs
       redis.set("tabs:#{key}", value)
     end
 
+    def del(*keys)
+      prefixed_keys = keys.map { |k| "tabs:#{k}" }
+      redis.del(*prefixed_keys)
+    end
+
     def incr(key)
       redis.incr("tabs:#{key}")
     end

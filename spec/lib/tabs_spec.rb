@@ -1,6 +1,7 @@
 require "spec_helper"
 
 describe Tabs do
+  include Tabs::Storage
 
   describe "#create_metric" do
 
@@ -74,7 +75,13 @@ describe Tabs do
       expect(Tabs.metric_exists?("foo")).to be_false
     end
 
-    it "removes the metrics values from redis"
+    it "removes the metrics values from redis" do
+      Tabs.increment_counter("foo")
+      keys = smembers("tabs:stat:keys:foo:hour")
+      expect(redis.keys).to include("tabs:stat:keys:foo:hour")
+      Tabs.drop_metric("foo")
+      expect(redis.keys).to_not include(keys[0])
+    end
 
   end
 

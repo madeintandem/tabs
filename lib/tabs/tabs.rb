@@ -57,8 +57,8 @@ module Tabs
     hdel "metrics", key
     Tabs::RESOLUTIONS.each do |resolution|
       stat_key = "stat:keys:#{key}:#{resolution}"
-      keys = smembers()
-      del(*keys)
+      keys = smembers(stat_key)
+      del(keys)
       del stat_key
     end
   end
