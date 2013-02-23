@@ -1,3 +1,5 @@
+![Travis Status](https://api.travis-ci.org/thegrubbsian/tabs.png)
+
 # Tabs
 
 Tabs is a redis-backed metrics tracker that supports counts, sums, averages, and min/max stats sliceable by the minute, hour, day, week, month, and year.
