@@ -27,8 +27,9 @@ Metrics come in two flavors: counters and values.
 A counter metric simply records the number of events that occur within a given timeframe.  To create a counter metric called ‘website-visits’, simply call:
 
     Tabs.create_metric(“website-visits”, “counter”)
-    
-This will set up the metric in the database.
+
+Tabs will also create a counter metric automatically the first time you
+increment the counter.
 
 To increment a metric counter, simply call:
 
@@ -60,11 +61,14 @@ The `Time` keys are also normalized.  For example, in hour resolution, the minut
 
 Value metrics take a value and record the min, max, avg, and sum for a given time resolution.  Creating a value metric is easy:
 
-    Tabs.create_metric(“new-user-age”, “value”)
-    
 To record a value, simply call `Tabs#record_value`.
 
     Tabs.record_value(“new-user-age”, 32)
+
+This will also create a value metric the first time, you can manually create
+a metric as well:
+
+    Tabs.create_metric("new-user-age", "value")
     
 Retrieving the stats for a value metric is just like retrieving a counter metric.
 
@@ -86,6 +90,21 @@ When tabs increments a counter or records a value it does so for each of the fol
     :minute, :hour, :day, :week, :month, :year
 
 It automatically aggregates multiple events for the same period.  For instance when you increment a counter metric, 1 will be added for each of the resolutions for the current time.  Repeating the event 5 minutes later will increment a different minute slot, but the same hour, date, week, etc.  When you retrieve metrics, all timestamps will be in UTC.
+
+### Inspecting Metrics
+
+You can list all metrics using `list_metrics`:
+
+    Tabs.list_metrics #=> ["website-visits", "new-user-age"]
+
+You can check a metric's type (counter of value) by calling
+`metric_type`:
+
+    Tabs.metric_type("website-visits") #=> "counter"
+
+And you can quickly check if a metric exists:
+
+    Tabs.metric_exists?("foobar") #=> false
 
 ### Drop a Metric
 
