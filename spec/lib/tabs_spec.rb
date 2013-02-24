@@ -87,13 +87,15 @@ describe Tabs do
 
   describe "#increment_counter" do
 
-    it "raises an Tabs::UnknownMetricError if the metric does not exist" do
-      lambda { Tabs.increment_counter("foo") }.should raise_error(Tabs::UnknownMetricError)
-    end
-
     it "raises a Tabs::MetricTypeMismatchError if the metric is the wrong type" do
       Tabs.create_metric("foo", "value")
       lambda { Tabs.increment_counter("foo") }.should raise_error(Tabs::MetricTypeMismatchError)
+    end
+
+    it "creates the metric if it doesn't exist" do
+      expect(Tabs.metric_exists?("foo")).to be_false
+      lambda { Tabs.increment_counter("foo") }.should_not raise_error
+      expect(Tabs.metric_exists?("foo")).to be_true
     end
 
     it "calls increment on the metric" do
@@ -105,10 +107,12 @@ describe Tabs do
 
   end
 
-  describe "#increment_counter" do
+  describe "#record_value" do
 
-    it "raises an Tabs::UnknownMetricError if the metric does not exist" do
-      lambda { Tabs.record_value("foo", 27) }.should raise_error(Tabs::UnknownMetricError)
+    it "creates the metric if it doesn't exist" do
+      expect(Tabs.metric_exists?("foo")).to be_false
+      lambda { Tabs.record_value("foo", 38) }.should_not raise_error
+      expect(Tabs.metric_exists?("foo")).to be_true
     end
 
     it "raises a Tabs::MetricTypeMismatchError if the metric is the wrong type" do

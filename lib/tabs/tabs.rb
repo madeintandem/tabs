@@ -19,20 +19,18 @@ module Tabs
     Config.redis
   end
 
+  def config
+    Config
+  end
+
   def increment_counter(key)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
+    create_metric(key, "counter") unless metric_exists?(key)
     raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
     get_metric(key).increment
   end
 
-  def counter_total(key, period=nil)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
-    raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
-    get_metric(key).total
-  end
-
   def record_value(key, value)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
+    create_metric(key, "value") unless metric_exists?(key)
     raise MetricTypeMismatchError.new("Only value metrics can record a value") unless metric_type(key) == "value"
     get_metric(key).record(value)
   end
@@ -49,6 +47,12 @@ module Tabs
     metrics = get("metrics")
     type = metrics[key]
     metric_klass(type).new(key)
+  end
+
+  def counter_total(key, period=nil)
+    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
+    raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
+    get_metric(key).total
   end
 
   def get_stats(key, period, resolution)
