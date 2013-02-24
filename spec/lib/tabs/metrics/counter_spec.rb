@@ -16,6 +16,15 @@ describe Tabs::Metrics::Counter do
     end
   end
 
+  describe "total count" do
+
+    it "is incremented every time regardless of resolution" do
+      30.times { metric.increment }
+      expect(metric.total).to eq(30)
+    end
+
+  end
+
   describe "retrieving stats" do
 
     before do

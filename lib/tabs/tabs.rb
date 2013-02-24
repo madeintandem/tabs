@@ -25,6 +25,12 @@ module Tabs
     get_metric(key).increment
   end
 
+  def counter_total(key, period=nil)
+    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
+    raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
+    get_metric(key).total
+  end
+
   def record_value(key, value)
     raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     raise MetricTypeMismatchError.new("Only value metrics can record a value") unless metric_type(key) == "value"
@@ -39,17 +45,20 @@ module Tabs
   end
 
   def get_metric(key)
+    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     metrics = get("metrics")
     type = metrics[key]
     metric_klass(type).new(key)
   end
 
   def get_stats(key, period, resolution)
+    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     metric = get_metric(key)
     metric.stats(period, resolution)
   end
 
   def metric_type(key)
+    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     hget "metrics", key
   end
 
@@ -62,6 +71,7 @@ module Tabs
   end
 
   def drop_metric(key)
+    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     hdel "metrics", key
     Tabs::RESOLUTIONS.each do |resolution|
       stat_key = "stat:keys:#{key}:#{resolution}"

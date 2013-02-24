@@ -15,6 +15,7 @@ module Tabs
         Tabs::RESOLUTIONS.each do |resolution|
           increment_resolution(resolution, timestamp)
         end
+        increment_total
         true
       end
 
@@ -29,6 +30,10 @@ module Tabs
         filtered_pairs.map { |p| Hash[[p]] }
       end
 
+      def total
+        get("stat:#{key}:total").to_i
+      end
+
       private
 
       def increment_resolution(resolution, timestamp)
@@ -36,6 +41,10 @@ module Tabs
         stat_key = "stat:value:#{key}:count:#{formatted_time}"
         sadd("stat:keys:#{key}:#{resolution}", stat_key)
         incr(stat_key)
+      end
+
+      def increment_total
+        incr("stat:#{key}:total")
       end
 
     end
