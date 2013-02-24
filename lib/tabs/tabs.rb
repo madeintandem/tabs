@@ -44,8 +44,7 @@ module Tabs
 
   def get_metric(key)
     raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
-    metrics = get("metrics")
-    type = metrics[key]
+    type = hget("metrics", key)
     metric_klass(type).new(key)
   end
 
