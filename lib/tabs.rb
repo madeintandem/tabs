@@ -17,5 +17,6 @@ require "tabs/resolutions/year"
 
 require "tabs/metrics/counter"
 require "tabs/metrics/value"
+require "tabs/metrics/task"
 
 require "tabs/tabs"

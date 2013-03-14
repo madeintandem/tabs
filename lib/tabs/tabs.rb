@@ -7,7 +7,7 @@ module Tabs
   class UnknownMetricError < Exception; end
   class MetricTypeMismatchError < Exception; end
 
-  METRIC_TYPES = ["counter", "value"]
+  METRIC_TYPES = ["counter", "value", "task"]
 
   RESOLUTIONS = [:minute, :hour, :day, :week, :month, :year]
 

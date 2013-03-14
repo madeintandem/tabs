@@ -25,8 +25,10 @@ describe Tabs do
     it "adds the metric's key to the list_metrics" do
       Tabs.create_metric("foo", "value")
       Tabs.create_metric("bar", "counter")
+      Tabs.create_metric("baz", "task")
       expect(Tabs.list_metrics).to include("foo")
       expect(Tabs.list_metrics).to include("bar")
+      expect(Tabs.list_metrics).to include("baz")
     end
 
   end
