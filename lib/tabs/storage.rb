@@ -44,6 +44,10 @@ module Tabs
       redis.smembers("tabs:#{key}")
     end
 
+    def sismember(key, value)
+      redis.sismember("tabs:#{key}", value)
+    end
+
     def hget(key, field)
       redis.hget("tabs:#{key}", field)
     end
