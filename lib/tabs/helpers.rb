@@ -2,15 +2,15 @@ module Tabs
   module Helpers
     extend self
 
-    def timestamp_range(period, resolution, default_value=0)
+    def timestamp_range(period, resolution)
       period = normalize_period(period, resolution)
       dt = period.first
-      Hash[([].tap do |arr|
+      [].tap do |arr|
         arr << dt
         while (dt = dt + 1.send(resolution)) <= period.last
           arr << dt.utc
         end
-      end).map { |ts| [ts, default_value] }]
+      end
     end
 
     def normalize_period(period, resolution)
@@ -25,8 +25,9 @@ module Tabs
     end
 
     def fill_missing_dates(period, date_value_pairs, resolution, default_value=0)
-      all_timestamps = timestamp_range(period, resolution, default_value)
-      merged = all_timestamps.merge(Hash[date_value_pairs])
+      all_timestamps = timestamp_range(period, resolution)
+      default_value_timestamps = Hash[all_timestamps.map { |t| [t, default_value] }]
+      merged = default_value_timestamps.merge(Hash[date_value_pairs])
       merged.to_a
     end
 

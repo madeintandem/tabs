@@ -14,6 +14,7 @@ describe Tabs::Metrics::Counter do
       stats = metric.stats(((now - 2.hours)..(now + 4.hours)), :hour)
       expect(stats).to include({ time => 1 })
     end
+
   end
 
   describe "total count" do

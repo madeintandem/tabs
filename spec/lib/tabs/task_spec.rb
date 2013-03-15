@@ -28,7 +28,14 @@ describe Tabs::Metrics::Task do
       Timecop.freeze(now + 2.minutes)
       metric.complete(token_1)
       stats = metric.stats((now - 5.minutes)..(now + 5.minutes), :minute)
-      expect(stats).to eq({ started: 2, completed: 1, rate: 0.1, percentage: 50.0 })
+      expect(stats).to eq(
+        {
+          started: 2,
+          completed: 1,
+          completed_within_period: 1,
+          completion_rate: 0.09
+        }
+      )
     end
 
   end
