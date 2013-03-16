@@ -31,5 +31,9 @@ module Tabs
       merged.to_a
     end
 
+    def round_float(f)
+      (f*100).round / 100.0
+    end
+
   end
 end

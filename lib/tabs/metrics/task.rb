@@ -13,52 +13,34 @@ module Tabs
       end
 
       def start(token)
-        sadd("stat:tokens:#{key}", token)
-        Tabs::RESOLUTIONS.each { |res| record_start(res, token, Time.now.utc) }
+        Token.new(token, key).start
       end
 
       def complete(token)
-        unless sismember("stat:tokens:#{key}", token)
-          raise UnstartedTaskMetricError.new("No task for metric '#{key}' was started with token '#{token}'")
-        end
-        Tabs::RESOLUTIONS.each { |res| record_complete(res, token, Time.now.utc) }
+        Token.new(token, key).complete
       end
 
       def stats(period, resolution)
         range = timestamp_range(period, resolution)
         started_tokens = tokens_for_period(range, resolution, "started")
         completed_tokens = tokens_for_period(range, resolution, "completed")
-        matching = started_tokens & completed_tokens
+        matching_tokens = started_tokens & completed_tokens
+        completion_rate = round_float(matching_tokens.size.to_f / range.size)
+        average_completion_time = (matching_tokens.map(&:time_elapsed).inject(&:+)) / matching_tokens.size
         {
           started: started_tokens.size,
           completed: completed_tokens.size,
-          completed_within_period: matching.size,
-          completion_rate: (((matching.size.to_f / range.size)*100).round / 100.0)
+          completed_within_period: matching_tokens.size,
+          completion_rate: completion_rate,
+          average_completion_time: average_completion_time
         }
       end
 
       private
 
-      def record_start(resolution, token, timestamp)
-        formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-        sadd("stat:started:#{key}:#{formatted_time}", token)
-      end
-
-      def record_complete(resolution, token, timestamp)
-        formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-        sadd("stat:completed:#{key}:#{formatted_time}", token)
-      end
-
       def tokens_for_period(range, resolution, type)
-        keys = keys_for_period(range, resolution, type)
-        mget(*keys).compact.map(&:to_a).flatten
-      end
-
-      def keys_for_period(range, resolution, type)
-        range.map do |date|
-          formatted_time = Tabs::Resolution.serialize(resolution, date)
-          "stat:#{type}:#{key}:#{formatted_time}"
-        end
+        keys = Task::Token.keys_for_range(key, range, resolution, type)
+        mget(*keys).compact.map(&:to_a).flatten.map { |t| Token.new(t, key) }
       end
 
     end
