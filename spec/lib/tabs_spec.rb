@@ -80,7 +80,7 @@ describe Tabs do
     it "removes the metrics values from redis" do
       Tabs.increment_counter("foo")
       keys = smembers("tabs:stat:keys:foo:hour")
-      expect(redis.keys).to include("tabs:stat:keys:foo:hour")
+      expect(redis.keys).to include("tabs:stat:counter:foo:keys:hour")
       Tabs.drop_metric("foo")
       expect(redis.keys).to_not include(keys[0])
     end

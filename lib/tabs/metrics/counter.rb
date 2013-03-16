@@ -1,8 +1,8 @@
 module Tabs
   module Metrics
     class Counter
-      include Tabs::Storage
-      include Tabs::Helpers
+      include Storage
+      include Helpers
 
       attr_reader :key
 
@@ -21,7 +21,7 @@ module Tabs
 
       def stats(period, resolution)
         period = normalize_period(period, resolution)
-        keys = smembers("stat:keys:#{key}:#{resolution}")
+        keys = smembers("stat:counter:#{key}:keys:#{resolution}")
         dates = keys.map { |k| extract_date_from_key(k, resolution) }
         values = mget(*keys).map(&:to_i)
         pairs = dates.zip(values)
@@ -31,20 +31,20 @@ module Tabs
       end
 
       def total
-        get("stat:#{key}:total").to_i
+        get("stat:counter:#{key}:total").to_i
       end
 
       private
 
       def increment_resolution(resolution, timestamp)
         formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-        stat_key = "stat:value:#{key}:count:#{formatted_time}"
-        sadd("stat:keys:#{key}:#{resolution}", stat_key)
+        stat_key = "stat:counter:#{key}:count:#{formatted_time}"
+        sadd("stat:counter:#{key}:keys:#{resolution}", stat_key)
         incr(stat_key)
       end
 
       def increment_total
-        incr("stat:#{key}:total")
+        incr("stat:counter:#{key}:total")
       end
 
     end

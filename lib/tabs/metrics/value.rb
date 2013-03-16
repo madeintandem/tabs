@@ -1,8 +1,8 @@
 module Tabs
   module Metrics
     class Value
-      include Tabs::Storage
-      include Tabs::Helpers
+      include Storage
+      include Helpers
 
       attr_reader :key
 
@@ -14,8 +14,8 @@ module Tabs
         timestamp = Time.now.utc
         Tabs::RESOLUTIONS.each do |resolution|
           formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-          stat_key = "stat:value:#{key}:#{formatted_time}"
-          sadd("stat:keys:#{key}:#{resolution}", stat_key)
+          stat_key = "stat:value:#{key}:data:#{formatted_time}"
+          sadd("stat:value:#{key}:keys:#{resolution}", stat_key)
           update_values(stat_key, value)
         end
         true
@@ -23,7 +23,7 @@ module Tabs
 
       def stats(period, resolution)
         period = normalize_period(period, resolution)
-        keys = smembers("stat:keys:#{key}:#{resolution}")
+        keys = smembers("stat:value:#{key}:keys:#{resolution}")
         dates = keys.map { |k| extract_date_from_key(k, resolution) }
         values = mget(*keys).map { |v| JSON.parse(v) }
         pairs = dates.zip(values)
