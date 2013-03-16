@@ -6,6 +6,7 @@ describe Tabs::Metrics::Task do
   let(:now) { Time.utc(2000, 1, 1, 0, 0) }
   let(:token_1) { "2gd7672gjh3" }
   let(:token_2) { "17985jh34gj" }
+  let(:token_3) { "27f98fhgh1x" }
 
   describe ".start" do
 
@@ -27,14 +28,17 @@ describe Tabs::Metrics::Task do
       metric.start(token_2)
       Timecop.freeze(now + 2.minutes)
       metric.complete(token_1)
+      metric.start(token_3)
+      Timecop.freeze(now + 3.minutes)
+      metric.complete(token_3)
       stats = metric.stats((now - 5.minutes)..(now + 5.minutes), :minute)
       expect(stats).to eq(
         {
-          started: 2,
-          completed: 1,
-          completed_within_period: 1,
-          completion_rate: 0.09,
-          average_completion_time: 120.0
+          started: 3,
+          completed: 2,
+          completed_within_period: 2,
+          completion_rate: 0.18,
+          average_completion_time: 90.0
         }
       )
     end
