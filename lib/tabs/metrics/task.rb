@@ -14,10 +14,12 @@ module Tabs
 
       def start(token)
         Token.new(token, key).start
+        true
       end
 
       def complete(token)
         Token.new(token, key).complete
+        true
       end
 
       def stats(period, resolution)

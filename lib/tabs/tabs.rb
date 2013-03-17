@@ -35,6 +35,17 @@ module Tabs
     get_metric(key).record(value)
   end
 
+  def start_task(key, token)
+    create_metric(key, "task")
+    raise MetricTypeMismatchError.new("Only task metrics can start a task") unless metric_type(key) == "task"
+    get_metric(key).start(token)
+  end
+
+  def complete_task(key, token)
+    raise MetricTypeMismatchError.new("Only task metrics can complete a task") unless metric_type(key) == "task"
+    get_metric(key).complete(token)
+  end
+
   def create_metric(key, type)
     raise UnknownTypeError.new("Unknown metric type: #{type}") unless METRIC_TYPES.include?(type)
     raise DuplicateMetricError.new("Metric already exists: #{key}") if metric_exists?(key)

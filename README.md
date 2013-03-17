@@ -91,6 +91,35 @@ This will return a familiar value, but with an expanded set of values.
       ...
     ]
 
+### Task Metrics
+
+Task metrics allow you to track the beginning and ending of a process.
+For example, tracking a user who downloads you mobile application and
+later visits your website to make a purchase.
+
+    Tabs.start_task("mobile-to-purchase", "2g4hj17787s")
+
+The first argument is the metric key and the second is a unique token
+used to identify the given process.  You can use any string for the
+token but it needs to be unique.  Use the `complete_task` method to
+finish the task:
+
+    Tabs.complete_task("mobile-to-purchase", "2g4hj17787s")
+
+Retrieving stats for a task metric is just like the other types:
+
+    Tabs.get_stats("mobile-to-purchase", (Time.now - 6.hours)..Time.now), : minute)
+
+This will return a hash like this:
+
+    {
+      started: 3,                     #=> number of items started within the period
+      completed: 2,                   #=> number of items completed within the period
+      completed_within_period: 2,     #=> number started AND completed within the period
+      completion_rate: 0.18,          #=> rate of completion
+      average_completion_time: 90.0   #=> average completion time in the specified resolution
+    }
+
 ### Resolutions
 
 When tabs increments a counter or records a value it does so for each of the following “resolutions”.  You may supply any of these as the last argument to the `Tabs#get_stats` method.
@@ -99,7 +128,7 @@ When tabs increments a counter or records a value it does so for each of the fol
 
 It automatically aggregates multiple events for the same period.  For instance when you increment a counter metric, 1 will be added for each of the resolutions for the current time.  Repeating the event 5 minutes later will increment a different minute slot, but the same hour, date, week, etc.  When you retrieve metrics, all timestamps will be in UTC.
 
-### Inspecting Metrics
+### [[Inspecting]] Metrics
 
 You can list all metrics using `list_metrics`:
 
