@@ -29,7 +29,7 @@ type will only be available in v0.6.0 and above.
 
 ## Usage
 
-Metrics come in two flavors: counters and values.
+Metrics come in three flavors: counters, values, and tasks.
 
 ### Counter Metrics
 
