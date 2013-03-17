@@ -2,13 +2,14 @@
 
 # Tabs
 
-Tabs is a redis-backed metrics tracker that supports counts, sums, averages, and min/max stats sliceable by the minute, hour, day, week, month, and year.
+Tabs is a redis-backed metrics tracker that supports counts, sums,
+averages, and min/max, and task based stats sliceable by the minute, hour, day, week, month, and year.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'tabs'
+    gem 'tabs', '~> 0.6.1'
 
 And then execute:
 
