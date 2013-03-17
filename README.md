@@ -36,7 +36,7 @@ A counter metric simply records the number of events that occur within a given t
 
     ```ruby
     Tabs.create_metric(“website-visits”, “counter”)
-    ```ruby
+    ```
 
 Tabs will also create a counter metric automatically the first time you
 increment the counter.
@@ -45,13 +45,13 @@ To increment a metric counter, simply call:
 
     ```ruby
     Tabs.increment_counter(“website-visits”)
-    ```ruby
+    ```
 
 To retrieve the counts for a given time period just call `Tabs#get_stats` with the name of the metric, a range of times defining the period for which you want stats, and the resolution at which the data should be aggregated.
 
     ```ruby
     Tabs.get_stats(“website-visits”, (Time.now - 10.days)..Time.now, :hour)
-    ```ruby
+    ```
     
 This will return stats for the last 10 days by hour as an array of hashes in which the keys are an instance of `Time` and the value is the count for that time.
 
@@ -67,7 +67,7 @@ This will return stats for the last 10 days by hour as an array of hashes in whi
       { 2000-01-01 07:00:00 UTC => 0 },
       ...
     ]
-    ```ruby
+    ```
     
 Times for the given period in which no events occurred will be “filled in” with a zero value to make visualizations easier.
 
@@ -81,20 +81,20 @@ To record a value, simply call `Tabs#record_value`.
 
     ```ruby
     Tabs.record_value(“new-user-age”, 32)
-    ```ruby
+    ```
 
 This will also create a value metric the first time, you can manually create
 a metric as well:
 
     ```ruby
     Tabs.create_metric("new-user-age", "value")
-    ```ruby
+    ```
     
 Retrieving the stats for a value metric is just like retrieving a counter metric.
 
     ```ruby
     Tabs.get_stats(“new-user-age”, (Time.now - 6.months)..Time.now, :month)
-    ```ruby
+    ```
     
 This will return a familiar value, but with an expanded set of values.
 
@@ -105,7 +105,7 @@ This will return a familiar value, but with an expanded set of values.
       { 2000-03-01 02:00:00 UTC => { min: 22, max: 34, sum: 180, avg: 26 } },
       ...
     ]
-    ```ruby
+    ```
 
 ### Task Metrics
 
@@ -115,7 +115,7 @@ later visits your website to make a purchase.
 
     ```ruby
     Tabs.start_task("mobile-to-purchase", "2g4hj17787s")
-    ```ruby
+    ```
 
 The first argument is the metric key and the second is a unique token
 used to identify the given process.  You can use any string for the
@@ -124,13 +124,13 @@ finish the task:
 
     ```ruby
     Tabs.complete_task("mobile-to-purchase", "2g4hj17787s")
-    ```ruby
+    ```
 
 Retrieving stats for a task metric is just like the other types:
 
     ```ruby
     Tabs.get_stats("mobile-to-purchase", (Time.now - 6.hours)..Time.now), : minute)
-    ```ruby
+    ```
 
 This will return a hash like this:
 
@@ -142,7 +142,7 @@ This will return a hash like this:
       completion_rate: 0.18,          #=> rate of completion
       average_completion_time: 90.0   #=> average completion time in the specified resolution
     }
-    ```ruby
+    ```
 
 ### Resolutions
 
@@ -158,20 +158,20 @@ You can list all metrics using `list_metrics`:
 
     ```ruby
     Tabs.list_metrics #=> ["website-visits", "new-user-age"]
-    ```ruby
+    ```
 
 You can check a metric's type (counter of value) by calling
 `metric_type`:
 
     ```ruby
     Tabs.metric_type("website-visits") #=> "counter"
-    ```ruby
+    ```
 
 And you can quickly check if a metric exists:
 
     ```ruby
     Tabs.metric_exists?("foobar") #=> false
-    ```ruby
+    ```
 
 ### Drop a Metric
 
@@ -179,7 +179,7 @@ To drop a metric, just call `Tabs#drop_metric`
 
     ```ruby
     Tabs.drop_metric(“website-visits”)
-    ```ruby
+    ```
     
 This will drop all recorded values for the metric so it may not be un-done...be careful.
 
@@ -197,7 +197,7 @@ There really isn’t much to configure with Tabs, it just works out of the box. 
       config.redis = { :host => 'localhost', :port => 6379 }
       
     end
-    ```ruby
+    ```
 
 ## Contributing
 
