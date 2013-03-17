@@ -38,7 +38,7 @@ describe Tabs::Metrics::Task do
           completed: 2,
           completed_within_period: 2,
           completion_rate: 0.18,
-          average_completion_time: 90.0
+          average_completion_time: 1.5
         }
       )
     end

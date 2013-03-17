@@ -16,6 +16,10 @@ module Tabs
         self.normalize(dt)
       end
 
+      def from_seconds(s)
+        s / 432000
+      end
+
       def normalize(ts)
         Time.utc(ts.year, ts.month, ts.day).beginning_of_week
       end

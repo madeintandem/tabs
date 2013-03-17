@@ -40,8 +40,8 @@ module Tabs
           Tabs::RESOLUTIONS.each { |res| record_complete(res, complete_time) }
         end
 
-        def time_elapsed
-          complete_time - start_time
+        def time_elapsed(resolution)
+          Tabs::Resolution.from_seconds(resolution, complete_time - start_time)
         end
 
         private

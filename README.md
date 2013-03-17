@@ -140,7 +140,7 @@ This will return a hash like this:
   completed: 2,                   #=> number of items completed within the period
   completed_within_period: 2,     #=> number started AND completed within the period
   completion_rate: 0.18,          #=> rate of completion
-  average_completion_time: 90.0   #=> average completion time in the specified resolution
+  average_completion_time: 1.5    #=> average completion time in the specified resolution
 }
 ```
 
@@ -152,7 +152,7 @@ When tabs increments a counter or records a value it does so for each of the fol
 
 It automatically aggregates multiple events for the same period.  For instance when you increment a counter metric, 1 will be added for each of the resolutions for the current time.  Repeating the event 5 minutes later will increment a different minute slot, but the same hour, date, week, etc.  When you retrieve metrics, all timestamps will be in UTC.
 
-### [[Inspecting]] Metrics
+### Inspecting Metrics
 
 You can list all metrics using `list_metrics`:
 

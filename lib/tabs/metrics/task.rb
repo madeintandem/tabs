@@ -28,7 +28,8 @@ module Tabs
         completed_tokens = tokens_for_period(range, resolution, "completed")
         matching_tokens = started_tokens & completed_tokens
         completion_rate = round_float(matching_tokens.size.to_f / range.size)
-        average_completion_time = (matching_tokens.map(&:time_elapsed).inject(&:+)) / matching_tokens.size
+        elapsed_times = matching_tokens.map { |t| t.time_elapsed(resolution) }
+        average_completion_time = (elapsed_times.inject(&:+)) / matching_tokens.size
         {
           started: started_tokens.size,
           completed: completed_tokens.size,

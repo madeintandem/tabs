@@ -14,6 +14,10 @@ module Tabs
         self.normalize(dt)
       end
 
+      def from_seconds(s)
+        s / 31536000
+      end
+
       def normalize(ts)
         Time.utc(ts.year)
       end

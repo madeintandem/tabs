@@ -10,6 +10,10 @@ module Tabs
       resolution_klass(resolution).deserialize(str)
     end
 
+    def from_seconds(resolution, s)
+      resolution_klass(resolution).from_seconds(s)
+    end
+
     def normalize(resolution, timestamp)
       resolution_klass(resolution).normalize(timestamp)
     end
