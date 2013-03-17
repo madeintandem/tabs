@@ -35,7 +35,7 @@ Metrics come in two flavors: counters and values.
 A counter metric simply records the number of events that occur within a given timeframe.  To create a counter metric called ‘website-visits’, simply call:
 
 ```ruby
-    Tabs.create_metric(“website-visits”, “counter”)
+Tabs.create_metric(“website-visits”, “counter”)
 ```
 
 Tabs will also create a counter metric automatically the first time you
