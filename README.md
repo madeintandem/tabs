@@ -35,7 +35,7 @@ Metrics come in two flavors: counters and values.
 A counter metric simply records the number of events that occur within a given timeframe.  To create a counter metric called ‘website-visits’, simply call:
 
 ```ruby
-Tabs.create_metric(“website-visits”, “counter”)
+Tabs.create_metric(“website-visits", “counter")
 ```
 
 Tabs will also create a counter metric automatically the first time you
@@ -44,13 +44,13 @@ increment the counter.
 To increment a metric counter, simply call:
 
 ```ruby
-Tabs.increment_counter(“website-visits”)
+Tabs.increment_counter(“website-visits")
 ```
 
 To retrieve the counts for a given time period just call `Tabs#get_stats` with the name of the metric, a range of times defining the period for which you want stats, and the resolution at which the data should be aggregated.
 
 ```ruby
-Tabs.get_stats(“website-visits”, (Time.now - 10.days)..Time.now, :hour)
+Tabs.get_stats(“website-visits", (Time.now - 10.days)..Time.now, :hour)
 ```
     
 This will return stats for the last 10 days by hour as an array of hashes in which the keys are an instance of `Time` and the value is the count for that time.
@@ -69,7 +69,7 @@ This will return stats for the last 10 days by hour as an array of hashes in whi
 ]
 ```
     
-Times for the given period in which no events occurred will be “filled in” with a zero value to make visualizations easier.
+Times for the given period in which no events occurred will be “filled in" with a zero value to make visualizations easier.
 
 The `Time` keys are also normalized.  For example, in hour resolution, the minutes and seconds of the `Time` object are set to 00:00.  Likewise for the week resolution, the day is set to the first day of the week.
 
@@ -80,7 +80,7 @@ Value metrics take a value and record the min, max, avg, and sum for a given tim
 To record a value, simply call `Tabs#record_value`.
 
 ```ruby
-Tabs.record_value(“new-user-age”, 32)
+Tabs.record_value(“new-user-age", 32)
 ```
 
 This will also create a value metric the first time, you can manually create
@@ -93,7 +93,7 @@ Tabs.create_metric("new-user-age", "value")
 Retrieving the stats for a value metric is just like retrieving a counter metric.
 
 ```ruby
-Tabs.get_stats(“new-user-age”, (Time.now - 6.months)..Time.now, :month)
+Tabs.get_stats(“new-user-age", (Time.now - 6.months)..Time.now, :month)
 ```
     
 This will return a familiar value, but with an expanded set of values.
@@ -146,7 +146,7 @@ This will return a hash like this:
 
 ### Resolutions
 
-When tabs increments a counter or records a value it does so for each of the following “resolutions”.  You may supply any of these as the last argument to the `Tabs#get_stats` method.
+When tabs increments a counter or records a value it does so for each of the following “resolutions".  You may supply any of these as the last argument to the `Tabs#get_stats` method.
 
     :minute, :hour, :day, :week, :month, :year
 
@@ -178,7 +178,7 @@ Tabs.metric_exists?("foobar") #=> false
 To drop a metric, just call `Tabs#drop_metric`
 
 ```ruby
-Tabs.drop_metric(“website-visits”)
+Tabs.drop_metric(“website-visits")
 ```
     
 This will drop all recorded values for the metric so it may not be un-done...be careful.
