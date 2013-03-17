@@ -130,7 +130,7 @@ Tabs.complete_task("mobile-to-purchase", "2g4hj17787s")
 Retrieving stats for a task metric is just like the other types:
 
 ```ruby
-Tabs.get_stats("mobile-to-purchase", (Time.now - 6.hours)..Time.now), : minute)
+Tabs.get_stats("mobile-to-purchase", (Time.now - 6.hours)..Time.now), :minute)
 ```
 
 This will return a hash like this:
@@ -140,7 +140,7 @@ This will return a hash like this:
   started: 3,                     #=> number of items started within the period
   completed: 2,                   #=> number of items completed within the period
   completed_within_period: 2,     #=> number started AND completed within the period
-  completion_rate: 0.18,          #=> rate of completion
+  completion_rate: 0.18,          #=> rate of completion in the specified resolution (e.g. :minute)
   average_completion_time: 1.5    #=> average completion time in the specified resolution
 }
 ```
