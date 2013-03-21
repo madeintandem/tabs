@@ -24,6 +24,7 @@ module Tabs
     end
 
     def del(*keys)
+      return 0 if keys.empty?
       prefixed_keys = keys.map { |k| "tabs:#{k}" }
       redis.del(*prefixed_keys)
     end

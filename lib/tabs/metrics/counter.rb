@@ -31,7 +31,18 @@ module Tabs
       end
 
       def total
-        get("stat:counter:#{key}:total").to_i
+        (get("stat:counter:#{key}:total") || 0).to_i
+      end
+
+      def drop!
+        del("stat:counter:#{key}:total")
+        keys = (Tabs::RESOLUTIONS.map do |resolution|
+          smembers("stat:counter:#{key}:keys:#{resolution}")
+        end).flatten
+        del(*keys)
+        Tabs::RESOLUTIONS.each do |resolution|
+          del("stat:counter:#{key}:keys:#{resolution}")
+        end
       end
 
       private

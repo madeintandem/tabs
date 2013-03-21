@@ -74,15 +74,18 @@ describe Tabs do
     it "removes the metric from the list_metrics" do
       Tabs.drop_metric("foo")
       expect(Tabs.list_metrics).to_not include("foo")
+    end
+
+    it "results in metric_exists? returning false" do
+      Tabs.drop_metric("foo")
       expect(Tabs.metric_exists?("foo")).to be_false
     end
 
-    it "removes the metrics values from redis" do
-      Tabs.increment_counter("foo")
-      keys = smembers("tabs:stat:keys:foo:hour")
-      expect(redis.keys).to include("tabs:stat:counter:foo:keys:hour")
+    it "calls drop! on the metric" do
+      metric = stub(:metric)
+      Tabs.stub(get_metric: metric)
+      metric.should_receive(:drop!)
       Tabs.drop_metric("foo")
-      expect(redis.keys).to_not include(keys[0])
     end
 
   end
@@ -144,11 +147,19 @@ describe Tabs do
 
   describe "#metric_type" do
 
-    it "returns the type of a given metric" do
+    it "returns the type of a counter metric" do
       Tabs.create_metric("foo", "counter")
-      Tabs.create_metric("bar", "value")
       expect(Tabs.metric_type("foo")).to eq("counter")
+    end
+
+    it "returns the type of a value metric" do
+      Tabs.create_metric("bar", "value")
       expect(Tabs.metric_type("bar")).to eq("value")
+    end
+
+    it "returns the type of a task metric" do
+      Tabs.create_metric("baz", "task")
+      expect(Tabs.metric_type("baz")).to eq("task")
     end
 
   end
