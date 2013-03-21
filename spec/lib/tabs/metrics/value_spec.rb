@@ -2,6 +2,8 @@ require "spec_helper"
 
 describe Tabs::Metrics::Value do
 
+  include Tabs::Storage
+
   let(:metric) { Tabs.create_metric("foo", "value") }
   let(:now) { Time.utc(2000, 1, 1, 0, 0) }
 
@@ -78,6 +80,30 @@ describe Tabs::Metrics::Value do
       stats = metric.stats(now..(now + 7.years), :year)
       expect(stats).to include({ (now + 3.years) => {"count"=>1, "min"=>10, "max"=>10, "sum"=>10, "avg"=>10} })
       expect(stats).to include({ (now + 6.years) => {"count"=>2, "min"=>15, "max"=>20, "sum"=>35, "avg"=>17} })
+    end
+
+  end
+
+  describe ".drop!" do
+
+    before do
+      3.times { metric.record(rand(30)) }
+      @count_keys = (Tabs::RESOLUTIONS.map do |res|
+        smembers("stat:value:foo:keys:#{res}")
+      end).flatten
+      metric.drop!
+    end
+
+    it "deletes all resolution count keys" do
+      @count_keys.each do |key|
+        expect(exists(key)).to be_false
+      end
+    end
+
+    it "deletes all resolution key collection keys" do
+      Tabs::RESOLUTIONS.each do |res|
+        expect(exists("stat:value:foo:keys:#{res}")).to be_false
+      end
     end
 
   end

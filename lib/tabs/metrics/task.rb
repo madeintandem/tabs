@@ -39,6 +39,16 @@ module Tabs
         }
       end
 
+      def drop!
+        #keys = (Tabs::RESOLUTIONS.map do |resolution|
+          #smembers("stat:value:#{key}:keys:#{resolution}")
+        #end).flatten
+        #del(*keys)
+        #Tabs::RESOLUTIONS.each do |resolution|
+          #del("stat:value:#{key}:keys:#{resolution}")
+        #end
+      end
+
       private
 
       def tokens_for_period(range, resolution, type)

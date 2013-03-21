@@ -32,6 +32,16 @@ module Tabs
         filtered_pairs.map { |p| Hash[[p]] }
       end
 
+      def drop!
+        keys = (Tabs::RESOLUTIONS.map do |resolution|
+          smembers("stat:value:#{key}:keys:#{resolution}")
+        end).flatten
+        del(*keys)
+        Tabs::RESOLUTIONS.each do |resolution|
+          del("stat:value:#{key}:keys:#{resolution}")
+        end
+      end
+
       private
 
       def update_values(stat_key, value)
