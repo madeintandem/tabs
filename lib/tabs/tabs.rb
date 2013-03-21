@@ -84,11 +84,11 @@ module Tabs
     list_metrics.include? key
   end
 
-  def drop_metric(key)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
-    hdel "metrics", key
+  def drop_metric(metric_key)
+    raise UnknownMetricError.new("Unknown metric: #{metric_key}") unless metric_exists?(metric_key)
+    hdel "metrics", metric_key
     Tabs::RESOLUTIONS.each do |resolution|
-      stat_key = "stat:keys:#{key}:#{resolution}"
+      stat_key = "stat:keys:#{metric_key}:#{resolution}"
       keys = smembers(stat_key)
       del(keys)
       del stat_key
