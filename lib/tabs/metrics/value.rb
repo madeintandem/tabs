@@ -33,13 +33,7 @@ module Tabs
       end
 
       def drop!
-        keys = (Tabs::RESOLUTIONS.map do |resolution|
-          smembers("stat:value:#{key}:keys:#{resolution}")
-        end).flatten
-        del(*keys)
-        Tabs::RESOLUTIONS.each do |resolution|
-          del("stat:value:#{key}:keys:#{resolution}")
-        end
+        del_by_prefix("stat:value:#{key}")
       end
 
       private

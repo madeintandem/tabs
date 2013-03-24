@@ -29,6 +29,12 @@ module Tabs
       redis.del(*prefixed_keys)
     end
 
+    def del_by_prefix(pattern)
+      keys = redis.keys("tabs:#{pattern}*")
+      return 0 if keys.empty?
+      redis.del(*keys)
+    end
+
     def incr(key)
       redis.incr("tabs:#{key}")
     end

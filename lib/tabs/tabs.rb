@@ -87,8 +87,8 @@ module Tabs
   def drop_metric(key)
     raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     metric = get_metric(key)
-    hdel "metrics", key
     metric.drop!
+    hdel "metrics", key
   end
 
   private
