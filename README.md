@@ -51,7 +51,7 @@ Tabs.increment_counter("website-visits")
 To retrieve the counts for a given time period just call `Tabs#get_stats` with the name of the metric, a range of times defining the period for which you want stats, and the resolution at which the data should be aggregated.
 
 ```ruby
-Tabs.get_stats("website-visits", (Time.now - 10.days)..Time.now, :hour)
+Tabs.get_stats("website-visits", 10.days.ago..Time.now, :hour)
 ```
     
 This will return stats for the last 10 days by hour as an array of hashes in which the keys are an instance of `Time` and the value is the count for that time.
@@ -94,7 +94,7 @@ Tabs.create_metric("new-user-age", "value")
 Retrieving the stats for a value metric is just like retrieving a counter metric.
 
 ```ruby
-Tabs.get_stats("new-user-age", (Time.now - 6.months)..Time.now, :month)
+Tabs.get_stats("new-user-age", 6.months.ago..Time.now, :month)
 ```
     
 This will return a familiar value, but with an expanded set of values.
@@ -130,7 +130,7 @@ Tabs.complete_task("mobile-to-purchase", "2g4hj17787s")
 Retrieving stats for a task metric is just like the other types:
 
 ```ruby
-Tabs.get_stats("mobile-to-purchase", (Time.now - 6.hours)..Time.now), :minute)
+Tabs.get_stats("mobile-to-purchase", 6.hours.ago..Time.now, :minute)
 ```
 
 This will return a hash like this:
