@@ -21,10 +21,10 @@ Or install it yourself as:
 
 ## Breaking Changes in v0.6.0
 
-Please note that when the library version went from 0.5.6 to 0.6.0 some of
+Please note that when the library version went from v0.5.6 to v0.6.0 some of
 the key patterns used to store metrics in Redis were changed.  If you upgrade
-an app to 0.6.0 the previous set of data will not be picked up by tabs.
-Please us 0.6.0 on new applications only.  However, the 'Task' metric
+an app to v0.6.0 the previous set of data will not be picked up by tabs.
+Please use v0.6.x on new applications only.  However, the 'Task' metric
 type will only be available in v0.6.0 and above.
 
 ## Usage
