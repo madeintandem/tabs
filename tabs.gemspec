@@ -25,7 +25,7 @@ Existing data cannot be read because of changes to the redis key patterns.
 Please continue to use version 0.5.6 if you need to access existing metric data."
 TXT
 
-  gem.add_dependency "activesupport", ">= 3.2.12"
+  gem.add_dependency "activesupport", ">= 3.2"
   gem.add_dependency "json", "~> 1.7.7"
   gem.add_dependency "redis", "~> 3.0.2"
 
