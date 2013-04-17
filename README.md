@@ -9,7 +9,7 @@ averages, and min/max, and task based stats sliceable by the minute, hour, day, 
 
 Add this line to your application's Gemfile:
 
-    gem 'tabs', '~> 0.6.2'
+    gem 'tabs', '~> 0.6.3'
 
 And then execute:
 
