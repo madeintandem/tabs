@@ -23,27 +23,27 @@ module Tabs
     Config
   end
 
-  def increment_counter(key)
+  def increment_counter(key, timestamp=Time.now)
     create_metric(key, "counter") unless metric_exists?(key)
     raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
-    get_metric(key).increment
+    get_metric(key).increment(timestamp)
   end
 
-  def record_value(key, value)
+  def record_value(key, value, timestamp=Time.now)
     create_metric(key, "value") unless metric_exists?(key)
     raise MetricTypeMismatchError.new("Only value metrics can record a value") unless metric_type(key) == "value"
-    get_metric(key).record(value)
+    get_metric(key).record(value, timestamp)
   end
 
-  def start_task(key, token)
+  def start_task(key, token, timestamp=Time.now)
     create_metric(key, "task")
     raise MetricTypeMismatchError.new("Only task metrics can start a task") unless metric_type(key) == "task"
-    get_metric(key).start(token)
+    get_metric(key).start(token, timestamp)
   end
 
-  def complete_task(key, token)
+  def complete_task(key, token, timestamp=Time.now)
     raise MetricTypeMismatchError.new("Only task metrics can complete a task") unless metric_type(key) == "task"
-    get_metric(key).complete(token)
+    get_metric(key).complete(token, timestamp)
   end
 
   def create_metric(key, type)

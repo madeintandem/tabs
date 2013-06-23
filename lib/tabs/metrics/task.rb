@@ -12,13 +12,13 @@ module Tabs
         @key = key
       end
 
-      def start(token)
-        Token.new(token, key).start
+      def start(token, timestamp=Time.now)
+        Token.new(token, key).start(timestamp)
         true
       end
 
-      def complete(token)
-        Token.new(token, key).complete
+      def complete(token, timestamp=Time.now)
+        Token.new(token, key).complete(timestamp)
         true
       end
 

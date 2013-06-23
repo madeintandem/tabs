@@ -18,25 +18,17 @@ module Tabs
           super(token)
         end
 
-        def start_key
-          "stat:started:#{key}:#{self}"
-        end
-
-        def end_key
-          "stat:completed:#{key}:#{self}"
-        end
-
-        def start
-          self.start_time = Time.now.utc
+        def start(timestamp=Time.now)
+          self.start_time = timestamp.utc
           sadd("stat:task:#{key}:tokens", self)
           Tabs::RESOLUTIONS.each { |res| record_start(res, start_time) }
         end
 
-        def complete
+        def complete(timestamp=Time.now)
+          self.complete_time = timestamp.utc
           unless sismember("stat:task:#{key}:tokens", self)
             raise UnstartedTaskMetricError.new("No task for metric '#{key}' was started with token '#{self}'")
           end
-          self.complete_time = Time.now.utc
           Tabs::RESOLUTIONS.each { |res| record_complete(res, complete_time) }
         end
 

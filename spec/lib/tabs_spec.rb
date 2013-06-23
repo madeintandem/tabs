@@ -128,7 +128,7 @@ describe Tabs do
     it "calls record on the metric" do
       metric = Tabs.create_metric("foo", "value")
       Tabs.stub(get_metric: metric)
-      metric.should_receive(:record).with(42)
+      metric.should_receive(:record).with(42, Time.now.utc)
       Tabs.record_value("foo", 42)
     end
 
@@ -142,7 +142,7 @@ describe Tabs do
       Tabs.create_metric("baz", "counter")
       expect(Tabs.list_metrics).to eq(["foo", "bar", "baz"])
     end
-    
+
   end
 
   describe "#metric_type" do

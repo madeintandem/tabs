@@ -10,8 +10,8 @@ module Tabs
         @key = key
       end
 
-      def increment
-        timestamp = Time.now.utc
+      def increment(timestamp=Time.now)
+        timestamp.utc
         Tabs::RESOLUTIONS.each do |resolution|
           increment_resolution(resolution, timestamp)
         end

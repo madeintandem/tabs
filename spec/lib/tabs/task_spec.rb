@@ -10,9 +10,27 @@ describe Tabs::Metrics::Task do
 
   describe ".start" do
 
+    it "calls start on the given token" do
+      token = stub(:token)
+      Tabs::Metrics::Task::Token.should_receive(:new).with(token_1, "foo").and_return(token)
+      token.should_receive(:start)
+      metric.start(token_1)
+    end
+
+    it "passes through the specified timestamp"
+
   end
 
   describe ".complete" do
+
+    it "calls complete on the given token" do
+      token = stub(:token)
+      Tabs::Metrics::Task::Token.should_receive(:new).with(token_1, "foo").and_return(token)
+      token.should_receive(:complete)
+      metric.complete(token_1)
+    end
+
+    it "passes through the specified timestamp"
 
     it "raises an UnstartedTaskMetricError if the metric has not yet been started" do
       lambda { metric.complete("foobar") }.should raise_error(Tabs::Metrics::Task::UnstartedTaskMetricError)

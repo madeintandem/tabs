@@ -10,8 +10,8 @@ module Tabs
         @key = key
       end
 
-      def record(value)
-        timestamp = Time.now.utc
+      def record(value, timestamp=Time.now)
+        timestamp.utc
         Tabs::RESOLUTIONS.each do |resolution|
           formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
           stat_key = "stat:value:#{key}:data:#{formatted_time}"

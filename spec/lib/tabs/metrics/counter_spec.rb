@@ -9,11 +9,19 @@ describe Tabs::Metrics::Counter do
 
   describe "incrementing stats" do
 
+    before { Timecop.freeze(now) }
+
     it "increments the value for the expected periods" do
-      Timecop.freeze(now)
       metric.increment
       time = Time.utc(now.year, now.month, now.day, now.hour)
       stats = metric.stats(((now - 2.hours)..(now + 4.hours)), :hour)
+      expect(stats).to include({ time => 1 })
+    end
+
+    it "applys the increment to the specified timestamp if one is supplied" do
+      time = Time.utc(now.year, now.month, now.day, now.hour) - 2.hours
+      metric.increment(time)
+      stats = metric.stats(((now - 3.hours)..now), :hour)
       expect(stats).to include({ time => 1 })
     end
 
