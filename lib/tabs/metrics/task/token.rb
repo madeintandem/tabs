@@ -4,13 +4,6 @@ module Tabs
       class Token < String
         include Storage
 
-        def self.keys_for_range(key, range, resolution, type)
-          range.map do |date|
-            formatted_time = Tabs::Resolution.serialize(resolution, date)
-            "stat:task:#{key}:#{type}:#{formatted_time}"
-          end
-        end
-
         attr_reader :key
 
         def initialize(token, key)
