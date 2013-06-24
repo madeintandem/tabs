@@ -9,7 +9,7 @@ averages, and min/max, and task based stats sliceable by the minute, hour, day, 
 
 Add this line to your application's Gemfile:
 
-    gem 'tabs', '~> 0.6.2'
+    gem 'tabs', '~> 0.7.0'
 
 And then execute:
 
@@ -48,6 +48,13 @@ To increment a metric counter, simply call:
 Tabs.increment_counter("website-visits")
 ```
 
+If you need to retroactively increment the counter for a specific
+timestamp, just pass it in.
+
+```ruby
+Tabs.increment_counter("wibsite-visits", Time.now - 2.days)
+```
+
 To retrieve the counts for a given time period just call `Tabs#get_stats` with the name of the metric, a range of times defining the period for which you want stats, and the resolution at which the data should be aggregated.
 
 ```ruby
@@ -82,6 +89,13 @@ To record a value, simply call `Tabs#record_value`.
 
 ```ruby
 Tabs.record_value("new-user-age", 32)
+```
+
+If you need to retroactively record a value for a specific
+timestamp, just pass it in.
+
+```ruby
+Tabs.increment_counter("new-user-age", 19, Time.now - 2.days)
 ```
 
 This will also create a value metric the first time, you can manually create
@@ -125,6 +139,14 @@ finish the task:
 
 ```ruby
 Tabs.complete_task("mobile-to-purchase", "2g4hj17787s")
+```
+
+If you need to retroactively start/complete a task at a specific
+timestamp, just pass it in.
+
+```ruby
+Tabs.start_task("mobile-to-purchase", "2g4hj17787s", Time.now - 2.days)
+Tabs.complete_task("mobile-to-purchase", "2g4hj17787s", Time.now - 1.days)
 ```
 
 Retrieving stats for a task metric is just like the other types:
