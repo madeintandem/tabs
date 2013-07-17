@@ -18,13 +18,6 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.post_install_message = <<TXT
-**** NOTICE ****
-Please note there are breaking changes in this version of tabs!
-Existing data cannot be read because of changes to the redis key patterns.
-Please continue to use version 0.5.6 if you need to access existing metric data."
-TXT
-
   gem.add_dependency "activesupport", ">= 3.2"
   gem.add_dependency "json", ">= 1.7"
   gem.add_dependency "redis", "~> 3.0.0"
