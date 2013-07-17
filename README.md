@@ -115,9 +115,9 @@ This will return a familiar value, but with an expanded set of values.
 
 ```ruby
 [
-  { 2000-01-01 00:00:00 UTC => { min: 19, max: 54, sum: 226, avg: 38 } },
-  { 2000-02-01 01:00:00 UTC => { min: 0, max: 0, sum: 0, avg: 0 } },
-  { 2000-03-01 02:00:00 UTC => { min: 22, max: 34, sum: 180, avg: 26 } },
+  { 2000-01-01 00:00:00 UTC => { count: 9, min: 19, max: 54, sum: 226, avg: 38 } },
+  { 2000-02-01 01:00:00 UTC => { count: 0, min: 0, max: 0, sum: 0, avg: 0 } },
+  { 2000-03-01 02:00:00 UTC => { count: 2, min: 22, max: 34, sum: 180, avg: 26 } },
   ...
 ]
 ```
