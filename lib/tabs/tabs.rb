@@ -91,6 +91,11 @@ module Tabs
     hdel "metrics", key
   end
 
+  def drop_all_metrics
+    metrics = self.list_metrics
+    metrics.each { |key| self.drop_metric key }
+  end
+
   private
 
   def metric_klass(type)

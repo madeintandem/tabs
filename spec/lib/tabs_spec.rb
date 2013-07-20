@@ -3,7 +3,7 @@ require "spec_helper"
 describe Tabs do
   include Tabs::Storage
 
-  describe "#create_metric" do
+  describe ".create_metric" do
 
     it "raises an error if the type is invalid" do
       lambda { Tabs.create_metric("foo", "foobar") }.should raise_error(Tabs::UnknownTypeError)
@@ -33,7 +33,7 @@ describe Tabs do
 
   end
 
-  describe "#get_metric" do
+  describe ".get_metric" do
 
     it "returns the expected metric object" do
       Tabs.create_metric("foo", "counter")
@@ -42,7 +42,7 @@ describe Tabs do
 
   end
 
-  describe "#list_metrics" do
+  describe ".list_metrics" do
 
     it "returns the list_metrics of metric names" do
       Tabs.create_metric("foo", "counter")
@@ -52,7 +52,7 @@ describe Tabs do
 
   end
 
-  describe "#metric_exists?" do
+  describe ".metric_exists?" do
 
     it "returns true if the metric exists" do
       Tabs.create_metric("foo", "counter")
@@ -65,7 +65,7 @@ describe Tabs do
 
   end
 
-  describe "#drop_metric" do
+  describe ".drop_metric" do
 
     before do
       Tabs.create_metric("foo", "counter")
@@ -90,7 +90,19 @@ describe Tabs do
 
   end
 
-  describe "#increment_counter" do
+  describe ".drop_all_metrics" do
+
+    it "drops all metrics" do
+      Tabs.create_metric("foo", "counter")
+      Tabs.create_metric("bar", "value")
+      Tabs.drop_all_metrics
+      expect(Tabs.metric_exists?("foo")).to be_false
+      expect(Tabs.metric_exists?("bar")).to be_false
+    end
+
+  end
+
+  describe ".increment_counter" do
 
     it "raises a Tabs::MetricTypeMismatchError if the metric is the wrong type" do
       Tabs.create_metric("foo", "value")
@@ -112,7 +124,7 @@ describe Tabs do
 
   end
 
-  describe "#record_value" do
+  describe ".record_value" do
 
     it "creates the metric if it doesn't exist" do
       expect(Tabs.metric_exists?("foo")).to be_false
@@ -134,7 +146,7 @@ describe Tabs do
 
   end
 
-  describe "#list_metrics" do
+  describe ".list_metrics" do
 
     it "lists all metrics that are defined" do
       Tabs.create_metric("foo", "counter")
@@ -145,7 +157,7 @@ describe Tabs do
 
   end
 
-  describe "#metric_type" do
+  describe ".metric_type" do
 
     it "returns the type of a counter metric" do
       Tabs.create_metric("foo", "counter")
