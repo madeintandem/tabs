@@ -18,10 +18,5 @@ module Tabs
       period_end = Tabs::Resolution.normalize(resolution, period.last.utc)
       (period_start..period_end)
     end
-
-    def round_float(f)
-      (f*100).round / 100.0
-    end
-
   end
 end

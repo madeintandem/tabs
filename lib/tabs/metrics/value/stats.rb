@@ -37,7 +37,7 @@ module Tabs
         end
 
         def avg
-          round_float(self.sum.to_f / self.count.to_f)
+          (self.sum.to_f / self.count.to_f).round(Config.decimal_precision)
         end
 
         def each(&block)
