@@ -95,7 +95,6 @@ describe Tabs::Metrics::Value do
       expect(stats).to include({ "timestamp" => (now + 3.years), "count"=>1, "min"=>10, "max"=>10, "sum"=>10, "avg"=>10})
       expect(stats).to include({ "timestamp" => (now + 6.years), "count"=>2, "min"=>15, "max"=>20, "sum"=>35, "avg"=>17})
     end
-
   end
 
   describe ".drop!" do

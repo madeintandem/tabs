@@ -34,4 +34,9 @@ describe Tabs::Metrics::Counter::Stats do
     expect(stats.avg).to eq 86.33
   end
 
+  it "avg returns 0 if values empty" do
+    stats = Tabs::Metrics::Counter::Stats.new(period, resolution, [])
+    expect(stats.avg).to be_zero
+  end
+
 end
