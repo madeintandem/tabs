@@ -59,11 +59,7 @@ module Tabs
     metric_klass(type).new(key)
   end
 
-  def counter_total(key, period=nil)
-
-    # TODO: Remove this in version 0.9.0
-    warn "[DEPRECATED] counter_total is deprecated, use get_stats instead and call total on the returned stats object"
-
+  def counter_total(key)
     raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
     get_metric(key).total

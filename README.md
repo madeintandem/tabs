@@ -19,14 +19,6 @@ Or install it yourself as:
 
     $ gem install tabs
 
-## Breaking Changes in v0.6.0
-
-Please note that when the library version went from v0.5.6 to v0.6.0 some of
-the key patterns used to store metrics in Redis were changed.  If you upgrade
-an app to v0.6.0 the previous set of data will not be picked up by tabs.
-Please use v0.6.x on new applications only.  However, the 'Task' metric
-type will only be available in v0.6.0 and above.
-
 ## Usage
 
 Metrics come in three flavors: counters, values, and tasks.
@@ -93,6 +85,13 @@ results.resolution  #=> The resolution requested
 Timestamps for the given period in which no events occurred will be "filled in" with a count value to make visualizations easier.
 
 The timestamps are also normalized.  For example, in hour resolution, the minutes and seconds of the timestamps are set to 00:00.  Likewise for the week resolution, the day is set to the first day of the week.
+
+Lastly, you can access the overall total for a counter (for all time)
+using the `counter_total` method.
+
+```ruby
+Tabs.counter_total("website-visits") #=> 476873
+```
 
 ### Value Metrics
 
@@ -254,6 +253,24 @@ Tabs.configure do |config|
   
 end
 ```
+
+## Breaking Changes
+
+### Breaking Changes in v0.6.0
+
+Please note that when the library version went from v0.5.6 to v0.6.0 some of
+the key patterns used to store metrics in Redis were changed.  If you upgrade
+an app to v0.6.0 the previous set of data will not be picked up by tabs.
+Please use v0.6.x on new applications only.  However, the 'Task' metric
+type will only be available in v0.6.0 and above.
+
+### Breaking Changes in v0.8.0
+
+In version 0.8.0 and higher the get_stats method returns a more robust
+object instead of just an array of hashes.  These stats objects are
+enumerable and most existing code utilizing tabs should continue to
+function.  However, please review the docs for more information if you
+encounter issues when upgrading.
 
 ## Contributing
 
