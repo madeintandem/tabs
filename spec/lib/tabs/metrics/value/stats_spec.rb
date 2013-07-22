@@ -38,4 +38,9 @@ describe Tabs::Metrics::Value::Stats do
     expect(stats.avg).to eq 16.76
   end
 
+  it "avg returns 0 if set is empty" do
+    stats = Tabs::Metrics::Value::Stats.new(period, resolution, [])
+    expect(stats.avg).to be_zero
+  end
+
 end

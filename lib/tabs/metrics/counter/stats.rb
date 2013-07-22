@@ -33,7 +33,9 @@ module Tabs
         end
 
         def avg
-          round_float(self.total.to_f / values.size.to_f)
+          return 0 if values.size.zero?
+
+          round_float(total.to_f / values.size.to_f)
         end
 
         def each(&block)
