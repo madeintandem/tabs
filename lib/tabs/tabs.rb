@@ -60,6 +60,10 @@ module Tabs
   end
 
   def counter_total(key, period=nil)
+
+    # TODO: Remove this in version 0.9.0
+    warn "[DEPRECATED] counter_total is deprecated, use get_stats instead and call total on the returned stats object"
+
     raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
     get_metric(key).total
@@ -84,16 +88,16 @@ module Tabs
     list_metrics.include? key
   end
 
-  def drop_metric(key)
+  def drop_metric!(key)
     raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     metric = get_metric(key)
     metric.drop!
     hdel "metrics", key
   end
 
-  def drop_all_metrics
+  def drop_all_metrics!
     metrics = self.list_metrics
-    metrics.each { |key| self.drop_metric key }
+    metrics.each { |key| self.drop_metric! key }
   end
 
   private

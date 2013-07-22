@@ -15,21 +15,24 @@ module Tabs
         Tabs::RESOLUTIONS.each do |resolution|
           formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
           stat_key = "stat:value:#{key}:data:#{formatted_time}"
-          sadd("stat:value:#{key}:keys:#{resolution}", stat_key)
           update_values(stat_key, value)
         end
         true
       end
 
       def stats(period, resolution)
-        period = normalize_period(period, resolution)
-        keys = smembers("stat:value:#{key}:keys:#{resolution}")
-        dates = keys.map { |k| extract_date_from_key(k, resolution) }
-        values = mget(*keys).map { |v| JSON.parse(v) }
-        pairs = dates.zip(values)
-        filtered_pairs = pairs.find_all { |p| period.cover?(p[0]) }
-        filtered_pairs = fill_missing_dates(period, filtered_pairs, resolution, default_value(0))
-        filtered_pairs.map { |p| Hash[[p]] }
+        timestamps = timestamp_range period, resolution
+        keys = timestamps.map do |ts|
+          "stat:value:#{key}:data:#{Tabs::Resolution.serialize(resolution, ts)}"
+        end
+
+        values = mget(*keys).map do |v|
+          value = v.nil? ? default_value(0) : JSON.parse(v)
+          value["timestamp"] = timestamps.shift
+          value.with_indifferent_access
+        end
+
+        Stats.new(period, resolution, values)
       end
 
       def drop!

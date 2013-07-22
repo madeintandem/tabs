@@ -61,29 +61,42 @@ To retrieve the counts for a given time period just call `Tabs#get_stats` with t
 Tabs.get_stats("website-visits", 10.days.ago..Time.now, :hour)
 ```
     
-This will return stats for the last 10 days by hour as an array of hashes in which the keys are an instance of `Time` and the value is the count for that time.
+This will return stats for the last 10 days by hour in the form of a `Tabs::Metrics::Counter::Stats` object.  This object is enumerable so you can iterate through the results like so:
 
 ```ruby
-[
-  { 2000-01-01 00:00:00 UTC => 1 },
-  { 2000-01-01 01:00:00 UTC => 0 },
-  { 2000-01-01 02:00:00 UTC => 10 },
-  { 2000-01-01 03:00:00 UTC => 1 },
-  { 2000-01-01 04:00:00 UTC => 0 },
-  { 2000-01-01 05:00:00 UTC => 0 },
-  { 2000-01-01 06:00:00 UTC => 3 },
-  { 2000-01-01 07:00:00 UTC => 0 },
+results = Tabs.get_stats("website-visits", 10.days.ago..Time.now, :hour)
+results.each { |r| puts r }
+
+#=>
+  { timestamp: 2000-01-01 00:00:00 UTC, count: 1 }
+  { timestamp: 2000-01-01 01:00:00 UTC, count: 0 }
+  { timestamp: 2000-01-01 02:00:00 UTC, count: 10 }
+  { timestamp: 2000-01-01 03:00:00 UTC, count: 1 }
+  { timestamp: 2000-01-01 04:00:00 UTC, count: 0 }
+  { timestamp: 2000-01-01 05:00:00 UTC, count: 0 }
+  { timestamp: 2000-01-01 06:00:00 UTC, count: 3 }
+  { timestamp: 2000-01-01 07:00:00 UTC, count: 0 }
   ...
-]
+```
+
+The results object also provides the following methods:
+
+```ruby
+results.total       #=> The count total for the given period
+results.min         #=> The min count for any timestamp in the period
+results.max         #=> The max count for any timestamp in the period
+results.avg         #=> The avg count for timestamps in the period
+results.period      #=> The timestamp range that was requested
+results.resolution  #=> The resolution requested
 ```
     
-Times for the given period in which no events occurred will be "filled in" with a zero value to make visualizations easier.
+Timestamps for the given period in which no events occurred will be "filled in" with a count value to make visualizations easier.
 
-The `Time` keys are also normalized.  For example, in hour resolution, the minutes and seconds of the `Time` object are set to 00:00.  Likewise for the week resolution, the day is set to the first day of the week.
+The timestamps are also normalized.  For example, in hour resolution, the minutes and seconds of the timestamps are set to 00:00.  Likewise for the week resolution, the day is set to the first day of the week.
 
 ### Value Metrics
 
-Value metrics take a value and record the min, max, avg, and sum for a given time resolution.  Creating a value metric is easy:
+Value metrics record a value at a point in time and calculate the min, max, avg, and sum for a given time resolution.  Creating a value metric is easy:
 
 To record a value, simply call `Tabs#record_value`.
 
@@ -111,15 +124,30 @@ Retrieving the stats for a value metric is just like retrieving a counter metric
 Tabs.get_stats("new-user-age", 6.months.ago..Time.now, :month)
 ```
     
-This will return a familiar value, but with an expanded set of values.
+This will return a `Tabs::Metrics::Value::Stats` object.  Again, this
+object is enumerable and encapsulates all the timestamps within the
+given period.
 
 ```ruby
-[
-  { 2000-01-01 00:00:00 UTC => { count: 9, min: 19, max: 54, sum: 226, avg: 38 } },
-  { 2000-02-01 01:00:00 UTC => { count: 0, min: 0, max: 0, sum: 0, avg: 0 } },
-  { 2000-03-01 02:00:00 UTC => { count: 2, min: 22, max: 34, sum: 180, avg: 26 } },
+results = Tabs.get_stats("new-user-age", 6.months.ago..Time.now, :month)
+results.each { |r| puts r }
+#=>
+  { timestamp: 2000-01-01 00:00:00, count: 9, min: 19, max: 54, sum: 226, avg: 38 }
+  { timestamp: 2000-02-01 01:00:00, count: 0, min: 0, max: 0, sum: 0, avg: 0 }
+  { timestamp: 2000-03-01 02:00:00, count: 2, min: 22, max: 34, sum: 180, avg: 26 }
   ...
-]
+```
+
+The results object also provides some aggregates and other methods:
+
+```ruby
+results.count       #=> The total count of recorded values for the period
+results.sum         #=> The sum of all values for the period
+results.min         #=> The min value for any timestamp in the period
+results.max         #=> The max value for any timestamp in the period
+results.avg         #=> The avg value for timestamps in the period
+results.period      #=> The timestamp range that was requested
+results.resolution  #=> The resolution requested
 ```
 
 ### Task Metrics
@@ -155,16 +183,15 @@ Retrieving stats for a task metric is just like the other types:
 Tabs.get_stats("mobile-to-purchase", 6.hours.ago..Time.now, :minute)
 ```
 
-This will return a hash like this:
+This will return a `Tabs::Metrics::Task::Stats` object:
 
 ```ruby
-{
-  started: 3,                     #=> number of items started within the period
-  completed: 2,                   #=> number of items completed within the period
-  completed_within_period: 2,     #=> number started AND completed within the period
-  completion_rate: 0.18,          #=> rate of completion in the specified resolution (e.g. :minute)
-  average_completion_time: 1.5    #=> average completion time in the specified resolution
-}
+results = Tabs.get_stats("mobile-to-purchase", 6.hours.ago..Time.now, :minute)
+results.started_within_period       #=> Number of items started in period
+results.completed_within_period     #=> Number of items completed in period
+results.started_and_completed_within_period  #=> Items wholly started/completed in period
+results.completion_rate             #=> Rate of completion in the given resolution
+results.average_completion_time     #=> Average time for the task to be completed
 ```
 
 ### Resolutions
@@ -201,10 +228,16 @@ Tabs.metric_exists?("foobar") #=> false
 To drop a metric, just call `Tabs#drop_metric`
 
 ```ruby
-Tabs.drop_metric("website-visits")
+Tabs.drop_metric!("website-visits")
 ```
     
 This will drop all recorded values for the metric so it may not be un-done...be careful.
+
+Even more dangerous, you can drop all metrics...be very careful.
+
+```ruby
+Tabs.drop_all_metrics!
+```
 
 ### Configuration
 

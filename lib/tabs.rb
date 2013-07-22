@@ -15,9 +15,11 @@ require "tabs/resolutions/week"
 require "tabs/resolutions/month"
 require "tabs/resolutions/year"
 
+require "tabs/metrics/counter/stats"
 require "tabs/metrics/counter"
+require "tabs/metrics/value/stats"
 require "tabs/metrics/value"
-require "tabs/metrics/task"
 require "tabs/metrics/task/token"
+require "tabs/metrics/task"
 
 require "tabs/tabs"

@@ -20,14 +20,19 @@ module Tabs
       end
 
       def stats(period, resolution)
-        period = normalize_period(period, resolution)
-        keys = smembers("stat:counter:#{key}:keys:#{resolution}")
-        dates = keys.map { |k| extract_date_from_key(k, resolution) }
-        values = mget(*keys).map(&:to_i)
-        pairs = dates.zip(values)
-        filtered_pairs = pairs.find_all { |p| period.cover?(p[0]) }
-        filtered_pairs = fill_missing_dates(period, filtered_pairs, resolution)
-        filtered_pairs.map { |p| Hash[[p]] }
+        timestamps = timestamp_range period, resolution
+        keys = timestamps.map do |ts|
+          "stat:counter:#{key}:count:#{Tabs::Resolution.serialize(resolution, ts)}"
+        end
+
+        values = mget(*keys).map do |v|
+          {
+            "timestamp" => timestamps.shift,
+            "count" => (v || 0).to_i
+          }.with_indifferent_access
+        end
+
+        Stats.new(period, resolution, values)
       end
 
       def total
@@ -43,7 +48,6 @@ module Tabs
       def increment_resolution(resolution, timestamp)
         formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
         stat_key = "stat:counter:#{key}:count:#{formatted_time}"
-        sadd("stat:counter:#{key}:keys:#{resolution}", stat_key)
         incr(stat_key)
       end
 

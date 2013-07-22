@@ -6,6 +6,14 @@ module Tabs
 
       class UnstartedTaskMetricError < Exception; end
 
+      Stats = Struct.new(
+        :started_within_period,
+        :completed_within_period,
+        :started_and_completed_within_period,
+        :completion_rate,
+        :average_completion_time
+      )
+
       attr_reader :key
 
       def initialize(key)
@@ -30,13 +38,13 @@ module Tabs
         completion_rate = round_float(matching_tokens.size.to_f / range.size)
         elapsed_times = matching_tokens.map { |t| t.time_elapsed(resolution) }
         average_completion_time = (elapsed_times.inject(&:+)) / matching_tokens.size
-        {
-          started: started_tokens.size,
-          completed: completed_tokens.size,
-          completed_within_period: matching_tokens.size,
-          completion_rate: completion_rate,
-          average_completion_time: average_completion_time
-        }
+        Stats.new(
+          started_tokens.size,
+          completed_tokens.size,
+          matching_tokens.size,
+          completion_rate,
+          average_completion_time
+        )
       end
 
       def drop!

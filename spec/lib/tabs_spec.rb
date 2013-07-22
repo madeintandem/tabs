@@ -72,12 +72,12 @@ describe Tabs do
     end
 
     it "removes the metric from the list_metrics" do
-      Tabs.drop_metric("foo")
+      Tabs.drop_metric!("foo")
       expect(Tabs.list_metrics).to_not include("foo")
     end
 
     it "results in metric_exists? returning false" do
-      Tabs.drop_metric("foo")
+      Tabs.drop_metric!("foo")
       expect(Tabs.metric_exists?("foo")).to be_false
     end
 
@@ -85,7 +85,7 @@ describe Tabs do
       metric = stub(:metric)
       Tabs.stub(get_metric: metric)
       metric.should_receive(:drop!)
-      Tabs.drop_metric("foo")
+      Tabs.drop_metric!("foo")
     end
 
   end
@@ -95,7 +95,7 @@ describe Tabs do
     it "drops all metrics" do
       Tabs.create_metric("foo", "counter")
       Tabs.create_metric("bar", "value")
-      Tabs.drop_all_metrics
+      Tabs.drop_all_metrics!
       expect(Tabs.metric_exists?("foo")).to be_false
       expect(Tabs.metric_exists?("bar")).to be_false
     end

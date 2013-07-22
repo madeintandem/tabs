@@ -15,14 +15,14 @@ describe Tabs::Metrics::Counter do
       metric.increment
       time = Time.utc(now.year, now.month, now.day, now.hour)
       stats = metric.stats(((now - 2.hours)..(now + 4.hours)), :hour)
-      expect(stats).to include({ time => 1 })
+      expect(stats).to include({ "timestamp" => time, "count" => 1 })
     end
 
     it "applys the increment to the specified timestamp if one is supplied" do
       time = Time.utc(now.year, now.month, now.day, now.hour) - 2.hours
       metric.increment(time)
       stats = metric.stats(((now - 3.hours)..now), :hour)
-      expect(stats).to include({ time => 1 })
+      expect(stats).to include({ "timestamp" => time, "count" => 1 })
     end
 
   end
@@ -59,42 +59,42 @@ describe Tabs::Metrics::Counter do
     it "returns the expected results for an minutely metric" do
       create_span(:minute)
       stats = metric.stats(now..(now + 7.minutes), :minute)
-      expect(stats).to include({ (now + 3.minutes) => 1 })
-      expect(stats).to include({ (now + 6.minutes) => 2 })
+      expect(stats).to include({ "timestamp" => (now + 3.minutes), "count" => 1 })
+      expect(stats).to include({ "timestamp" => (now + 6.minutes), "count" => 2 })
     end
 
     it "returns the expected results for an hourly metric" do
       create_span(:hours)
       stats = metric.stats(now..(now + 7.hours), :hour)
-      expect(stats).to include({ (now + 3.hours) => 1 })
-      expect(stats).to include({ (now + 6.hours) => 2 })
+      expect(stats).to include({ "timestamp" => (now + 3.hours), "count" => 1 })
+      expect(stats).to include({ "timestamp" => (now + 6.hours), "count" => 2 })
     end
 
     it "returns the expected results for a daily metric" do
       create_span(:days)
       stats = metric.stats(now..(now + 7.days), :day)
-      expect(stats).to include({ (now + 3.days) => 1 })
-      expect(stats).to include({ (now + 6.days) => 2 })
+      expect(stats).to include({ "timestamp" => (now + 3.days), "count" => 1 })
+      expect(stats).to include({ "timestamp" => (now + 6.days), "count" => 2 })
     end
 
     it "returns the expected results for a monthly metric" do
       create_span(:months)
       stats = metric.stats(now..(now + 7.months), :month)
-      expect(stats).to include({ (now + 3.months) => 1 })
-      expect(stats).to include({ (now + 6.months) => 2 })
+      expect(stats).to include({ "timestamp" => (now + 3.months), "count" => 1 })
+      expect(stats).to include({ "timestamp" => (now + 6.months), "count" => 2 })
     end
 
     it "returns the expected results for a yearly metric" do
       create_span(:years)
       stats = metric.stats(now..(now + 7.years), :year)
-      expect(stats).to include({ (now + 3.years) => 1 })
-      expect(stats).to include({ (now + 6.years) => 2 })
+      expect(stats).to include({ "timestamp" => (now + 3.years), "count" => 1 })
+      expect(stats).to include({ "timestamp" => (now + 6.years), "count" => 2 })
     end
 
     it "returns zeros for time periods which do not have any events" do
       create_span(:days)
       stats = metric.stats(now..(now + 7.days), :day)
-      expect(stats).to include({ (now + 1.day) => 0 })
+      expect(stats).to include({ "timestamp" => (now + 1.day), "count" => 0 })
     end
 
     context "for weekly metrics" do
@@ -106,15 +106,15 @@ describe Tabs::Metrics::Counter do
       it "returns the expected results for a weekly metric" do
         create_span(:weeks)
         stats = metric.stats(period, :week)
-        expect(stats).to include({ (now + 3.weeks).beginning_of_week => 1 })
-        expect(stats).to include({ (now + 6.weeks).beginning_of_week => 2 })
+        expect(stats).to include({ "timestamp" => (now + 3.weeks).beginning_of_week, "count" => 1 })
+        expect(stats).to include({ "timestamp" => (now + 6.weeks).beginning_of_week, "count" => 2 })
       end
 
       it "normalizes the period to the first day of the week" do
         create_span(:weeks)
         stats = metric.stats(period, :week)
-        expect(stats.first.keys[0]).to eq(period.first.beginning_of_week)
-        expect(stats.last.keys[0]).to eq(period.last.beginning_of_week)
+        expect(stats.first["timestamp"]).to eq(period.first.beginning_of_week)
+        expect(stats.last["timestamp"]).to eq(period.last.beginning_of_week)
       end
 
     end
