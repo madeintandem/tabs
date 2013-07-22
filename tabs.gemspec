@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ["lib"]
 
-  gem.post_install_message <<EOS
+  gem.post_install_message = <<EOS
 Tabs v0.8.0 - BREAKING CHANGES:
 The get_stats method now returns a more robust object instead of just
 an array of hashes.  Existing data will continue to work (no changes were
