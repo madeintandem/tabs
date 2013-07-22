@@ -43,4 +43,19 @@ describe Tabs::Metrics::Value::Stats do
     expect(stats.avg).to be_zero
   end
 
+  context "override decimal precision" do
+    before do
+      @precision = Tabs.config.decimal_precision
+      Tabs.config.decimal_precision = 1
+    end
+
+    after do
+      Tabs.config.decimal_precision = @precision
+    end
+
+    it "allows you to override decimal precision" do
+      expect(stats.avg).to eq 16.8
+    end
+  end
+
 end

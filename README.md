@@ -52,7 +52,7 @@ To retrieve the counts for a given time period just call `Tabs#get_stats` with t
 ```ruby
 Tabs.get_stats("website-visits", 10.days.ago..Time.now, :hour)
 ```
-    
+
 This will return stats for the last 10 days by hour in the form of a `Tabs::Metrics::Counter::Stats` object.  This object is enumerable so you can iterate through the results like so:
 
 ```ruby
@@ -81,7 +81,7 @@ results.avg         #=> The avg count for timestamps in the period
 results.period      #=> The timestamp range that was requested
 results.resolution  #=> The resolution requested
 ```
-    
+
 Timestamps for the given period in which no events occurred will be "filled in" with a count value to make visualizations easier.
 
 The timestamps are also normalized.  For example, in hour resolution, the minutes and seconds of the timestamps are set to 00:00.  Likewise for the week resolution, the day is set to the first day of the week.
@@ -116,13 +116,13 @@ a metric as well:
 ```ruby
 Tabs.create_metric("new-user-age", "value")
 ```
-    
+
 Retrieving the stats for a value metric is just like retrieving a counter metric.
 
 ```ruby
 Tabs.get_stats("new-user-age", 6.months.ago..Time.now, :month)
 ```
-    
+
 This will return a `Tabs::Metrics::Value::Stats` object.  Again, this
 object is enumerable and encapsulates all the timestamps within the
 given period.
@@ -229,7 +229,7 @@ To drop a metric, just call `Tabs#drop_metric`
 ```ruby
 Tabs.drop_metric!("website-visits")
 ```
-    
+
 This will drop all recorded values for the metric so it may not be un-done...be careful.
 
 Even more dangerous, you can drop all metrics...be very careful.
@@ -240,17 +240,21 @@ Tabs.drop_all_metrics!
 
 ### Configuration
 
-There really isn’t much to configure with Tabs, it just works out of the box.  You can use the following configure block to set the Redis connection instance that Tabs will use.
+Tabs just works out of the box. However, if you want to override the default Redis connection or decimal precision, this is how:
 
 ```ruby
 Tabs.configure do |config|
 
   # set it to an existing connection
   config.redis = Redis.current
-  
+
   # pass a config hash that will be passed to Redis.new
   config.redis = { :host => 'localhost', :port => 6379 }
-  
+
+  # override default decimal precision (5)
+  # affects stat averages and task completion rate
+  config.decimal_precision = 2
+
 end
 ```
 

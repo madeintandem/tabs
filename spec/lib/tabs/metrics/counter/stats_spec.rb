@@ -31,7 +31,7 @@ describe Tabs::Metrics::Counter::Stats do
   end
 
   it "avg returns the average for the entire set" do
-    expect(stats.avg).to eq 86.33
+    expect(stats.avg).to eq 86.33333
   end
 
   it "avg returns 0 if values empty" do

@@ -66,7 +66,7 @@ describe Tabs::Metrics::Task do
       expect(stats.started_within_period).to eq 3
       expect(stats.completed_within_period).to eq 2
       expect(stats.started_and_completed_within_period).to eq 2
-      expect(stats.completion_rate).to eq 0.18
+      expect(stats.completion_rate).to eq 0.18182
       expect(stats.average_completion_time).to eq 1.5
     end
 

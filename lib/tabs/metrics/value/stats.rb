@@ -38,8 +38,7 @@ module Tabs
 
         def avg
           return 0 if count.zero?
-
-          round_float(sum.to_f / count.to_f)
+          (self.sum.to_f / self.count.to_f).round(Config.decimal_precision)
         end
 
         def each(&block)
