@@ -18,5 +18,10 @@ module Tabs
       period_end = Tabs::Resolution.normalize(resolution, period.last.utc)
       (period_start..period_end)
     end
+
+    def to_numeric(v)
+      ((float = Float(v)) && (float % 1.0 == 0) ? float.to_i : float) rescue v
+    end
+
   end
 end

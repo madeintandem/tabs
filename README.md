@@ -276,6 +276,20 @@ enumerable and most existing code utilizing tabs should continue to
 function.  However, please review the docs for more information if you
 encounter issues when upgrading.
 
+### Breaking Changes in v0.8.2
+
+In version 0.8.2 and higher the storage keys for value metrics have been
+changed.  Originally the various pieces (avg, sum, count, etc) were
+stored in a JSON serialized string in a single key.  The intent was that
+this would comprise a poor-mans transaction of sorts.  The downside
+however was a major hit on performance when doing a lot of writes or
+reading stats for a large date range.  In v0.8.2 these component values
+are stored in a real Redis hash and updated atomically when a value is
+recorded.  In future versions this will be changed to use a MULTI
+statement to simulate a transaction.  Value data that was recorded prior
+to v0.8.2 will not be accessible in this or future versions so please
+continue to use v0.8.1 or lower if that is an issue.
+
 ## Contributing
 
 1. Fork it
