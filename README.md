@@ -260,7 +260,7 @@ end
 
 ## Breaking Changes
 
-### Breaking Changes in v0.6.0
+### v0.6.0
 
 Please note that when the library version went from v0.5.6 to v0.6.0 some of
 the key patterns used to store metrics in Redis were changed.  If you upgrade
@@ -268,7 +268,7 @@ an app to v0.6.0 the previous set of data will not be picked up by tabs.
 Please use v0.6.x on new applications only.  However, the 'Task' metric
 type will only be available in v0.6.0 and above.
 
-### Breaking Changes in v0.8.0
+### v0.8.0
 
 In version 0.8.0 and higher the get_stats method returns a more robust
 object instead of just an array of hashes.  These stats objects are
@@ -276,7 +276,7 @@ enumerable and most existing code utilizing tabs should continue to
 function.  However, please review the docs for more information if you
 encounter issues when upgrading.
 
-### Breaking Changes in v0.8.2
+### v0.8.2
 
 In version 0.8.2 and higher the storage keys for value metrics have been
 changed.  Originally the various pieces (avg, sum, count, etc) were
