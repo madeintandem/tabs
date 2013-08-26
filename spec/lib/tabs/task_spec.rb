@@ -4,9 +4,9 @@ describe Tabs::Metrics::Task do
 
   let(:metric) { Tabs.create_metric("foo", "task") }
   let(:now) { Time.utc(2000, 1, 1, 0, 0) }
-  let(:token_1) { "2gd7672gjh3" }
-  let(:token_2) { "17985jh34gj" }
-  let(:token_3) { "27f98fhgh1x" }
+  let(:token_1) { "aaaa" }
+  let(:token_2) { "bbbb" }
+  let(:token_3) { "cccc" }
 
   describe ".start" do
 
