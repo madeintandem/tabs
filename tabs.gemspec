@@ -42,7 +42,6 @@ continue to use v0.8.1 or lower if that is an issue.
 EOS
 
   gem.add_dependency "activesupport", ">= 3.2"
-  gem.add_dependency "json", ">= 1.7"
   gem.add_dependency "redis", "~> 3.0.0"
 
   gem.add_development_dependency "fakeredis"
