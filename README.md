@@ -1,4 +1,4 @@
-![Travis Status](https://api.travis-ci.org/thegrubbsian/tabs.png)
+![Travis Status](https://api.travis-ci.org/devmynd/tabs.png)
 
 # Tabs
 
