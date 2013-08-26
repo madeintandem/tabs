@@ -201,6 +201,67 @@ When tabs increments a counter or records a value it does so for each of the fol
 
 It automatically aggregates multiple events for the same period.  For instance when you increment a counter metric, 1 will be added for each of the resolutions for the current time.  Repeating the event 5 minutes later will increment a different minute slot, but the same hour, date, week, etc.  When you retrieve metrics, all timestamps will be in UTC.
 
+#### Custom Resolutions
+
+If the built-in resolutions above don't work you can add your own.  All
+that's necessary is a module that conforms to the following protocol:
+
+```ruby
+module SecondResolution
+  extend Tabs::Resolutionable
+  extend self
+
+  PATTERN = "%Y-%m-%d-%H-%M-%S"
+
+  def serialize(timestamp)
+    timestamp.strftime(PATTERN)
+  end
+
+  def deserialize(str)
+    dt = DateTime.strptime(str, PATTERN)
+    self.normalize(dt)
+  end
+
+  def from_seconds(s)
+    s / 1
+  end
+
+  def normalize(ts)
+    Time.utc(ts.year, ts.month, ts.day, ts.hour, ts.min, ts.sec)
+  end
+end
+
+```
+
+A little description on each of the above methods:
+
+*`serialize`*: converts the timestamp to a string.  The return value
+here will be used as part of the Redis key storing values associated
+with a given metric.
+
+*`deserialize`*: converts the string representation of a timestamp back
+into an actual DateTime value.
+
+*`from_seconds`*: should return the number of periods in the given
+number of seconds.  For example, there are 60 seconds in a minute.
+
+*`normalize`*: should simply return the first timestamp for the period.
+For example, the week resolution returns the first hour of the first day
+of the week.
+
+*NOTE: If you're doing a custom resolution you should probably look into
+the code a bit.*
+
+Once you have a module that conforms to the resolution protocol you need
+to register it with Tabs.  You can do this in one of two ways:
+
+```ruby
+# This call can be anywhere before you start using tabs
+Tabs::Resolution.register(:second, SecondResolution)
+
+# or, you can use the config block described below
+```
+
 ### Inspecting Metrics
 
 You can list all metrics using `list_metrics`:
@@ -254,6 +315,9 @@ Tabs.configure do |config|
   # override default decimal precision (5)
   # affects stat averages and task completion rate
   config.decimal_precision = 2
+
+  # registers a custom resolution
+  config.register_resolution :second, SecondResolution
 
 end
 ```

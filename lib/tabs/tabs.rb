@@ -9,8 +9,6 @@ module Tabs
 
   METRIC_TYPES = ["counter", "value", "task"]
 
-  RESOLUTIONS = [:minute, :hour, :day, :week, :month, :year]
-
   def configure
     yield(Config)
   end

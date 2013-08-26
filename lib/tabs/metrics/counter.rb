@@ -12,7 +12,7 @@ module Tabs
 
       def increment(timestamp=Time.now)
         timestamp.utc
-        Tabs::RESOLUTIONS.each do |resolution|
+        Tabs::Resolution.all.each do |resolution|
           increment_resolution(resolution, timestamp)
         end
         increment_total

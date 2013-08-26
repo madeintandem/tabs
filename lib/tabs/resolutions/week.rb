@@ -1,6 +1,7 @@
 module Tabs
   module Resolutions
     module Week
+      extend Tabs::Resolutionable
       extend self
 
       PATTERN = "%Y-%W"

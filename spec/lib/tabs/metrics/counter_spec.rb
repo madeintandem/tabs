@@ -126,7 +126,7 @@ describe Tabs::Metrics::Counter do
     before do
       3.times { metric.increment }
       expect(exists("stat:counter:foo:total")).to be_true
-      @count_keys = (Tabs::RESOLUTIONS.map do |res|
+      @count_keys = (Tabs::Resolution.all.map do |res|
         smembers("stat:counter:foo:keys:#{res}")
       end).flatten
       metric.drop!
@@ -143,7 +143,7 @@ describe Tabs::Metrics::Counter do
     end
 
     it "deletes all resolution key collection keys" do
-      Tabs::RESOLUTIONS.each do |res|
+      Tabs::Resolution.all.each do |res|
         expect(exists("stat:counter:foo:keys:#{res}")).to be_false
       end
     end

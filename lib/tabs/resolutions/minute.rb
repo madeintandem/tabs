@@ -1,6 +1,7 @@
 module Tabs
   module Resolutions
     module Minute
+      extend Tabs::Resolutionable
       extend self
 
       PATTERN = "%Y-%m-%d-%H-%M"

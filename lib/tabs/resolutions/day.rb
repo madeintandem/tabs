@@ -1,6 +1,7 @@
 module Tabs
   module Resolutions
     module Day
+      extend Resolutionable
       extend self
 
       PATTERN = "%Y-%m-%d"

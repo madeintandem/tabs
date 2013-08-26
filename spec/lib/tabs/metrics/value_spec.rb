@@ -101,7 +101,7 @@ describe Tabs::Metrics::Value do
 
     before do
       3.times { metric.record(rand(30)) }
-      @count_keys = (Tabs::RESOLUTIONS.map do |res|
+      @count_keys = (Tabs::Resolution.all.map do |res|
         smembers("stat:value:foo:keys:#{res}")
       end).flatten
       metric.drop!
@@ -114,7 +114,7 @@ describe Tabs::Metrics::Value do
     end
 
     it "deletes all resolution key collection keys" do
-      Tabs::RESOLUTIONS.each do |res|
+      Tabs::Resolution.all.each do |res|
         expect(exists("stat:value:foo:keys:#{res}")).to be_false
       end
     end

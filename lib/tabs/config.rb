@@ -22,5 +22,9 @@ module Tabs
       @redis ||= Redis.new
     end
 
+    def register_resolution(resolution, klass)
+      Tabs::Resolution.register(resolution, klass)
+    end
+
   end
 end

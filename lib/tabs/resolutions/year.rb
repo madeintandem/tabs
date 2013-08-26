@@ -1,6 +1,7 @@
 module Tabs
   module Resolutions
     module Year
+      extend Tabs::Resolutionable
       extend self
 
       PATTERN = "%Y"

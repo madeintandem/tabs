@@ -15,7 +15,7 @@ module Tabs
         def start(timestamp=Time.now)
           self.start_time = timestamp.utc
           sadd("stat:task:#{key}:tokens", token)
-          Tabs::RESOLUTIONS.each { |res| record_start(res, start_time) }
+          Tabs::Resolution.all.each { |res| record_start(res, start_time) }
         end
 
         def complete(timestamp=Time.now)
@@ -23,7 +23,7 @@ module Tabs
           unless sismember("stat:task:#{key}:tokens", token)
             raise UnstartedTaskMetricError.new("No task for metric '#{key}' was started with token '#{token}'")
           end
-          Tabs::RESOLUTIONS.each { |res| record_complete(res, complete_time) }
+          Tabs::Resolution.all.each { |res| record_complete(res, complete_time) }
         end
 
         def time_elapsed(resolution)
