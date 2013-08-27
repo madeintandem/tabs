@@ -16,7 +16,11 @@ module Tabs
       end
 
       def from_seconds(s)
-        s / 86400
+        s / 1.day
+      end
+
+      def add(ts, num)
+        ts + num.days
       end
 
       def normalize(ts)

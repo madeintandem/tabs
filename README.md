@@ -226,6 +226,10 @@ module SecondResolution
     s / 1
   end
 
+  def add(timestamp, num_of_seconds)
+    timestamp + num_of_seconds.seconds
+  end
+
   def normalize(ts)
     Time.utc(ts.year, ts.month, ts.day, ts.hour, ts.min, ts.sec)
   end
@@ -244,6 +248,9 @@ into an actual DateTime value.
 
 *`from_seconds`*: should return the number of periods in the given
 number of seconds.  For example, there are 60 seconds in a minute.
+
+*`add`*: should add the number of seconds in the given resolution to the
+supplied timestamp.
 
 *`normalize`*: should simply return the first timestamp for the period.
 For example, the week resolution returns the first hour of the first day

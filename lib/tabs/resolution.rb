@@ -1,5 +1,6 @@
 module Tabs
   module Resolution
+    extend Resolutionable
     extend self
 
     def register(resolution, klass)
@@ -17,6 +18,10 @@ module Tabs
 
     def from_seconds(resolution, s)
       resolution_klass(resolution).from_seconds(s)
+    end
+
+    def add(resolution, ts, num)
+      resolution_klass(resolution).add(ts, num)
     end
 
     def normalize(resolution, timestamp)

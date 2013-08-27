@@ -16,7 +16,11 @@ module Tabs
       end
 
       def from_seconds(s)
-        s / 1728000
+        s / 1.month
+      end
+
+      def add(ts, num)
+        ts + num.months
       end
 
       def normalize(ts)

@@ -16,7 +16,11 @@ module Tabs
       end
 
       def from_seconds(s)
-        s / 31536000
+        s / 1.year
+      end
+
+      def add(ts, num)
+        ts + num.years
       end
 
       def normalize(ts)

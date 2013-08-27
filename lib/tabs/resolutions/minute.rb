@@ -16,7 +16,11 @@ module Tabs
       end
 
       def from_seconds(s)
-        s / 60.0
+        s / 1.minute
+      end
+
+      def add(ts, num)
+        ts + num.minutes
       end
 
       def normalize(ts)

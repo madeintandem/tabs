@@ -2,22 +2,24 @@ module Tabs
   module Resolutionable
     extend self
 
-    class MethodNotImplementedException < Exception; end
-
     def serialize
-      raise MethodNotImplementedException
+      raise "Must implement serialize in the concrete resolution module"
     end
 
     def deserialize
-      raise MethodNotImplementedException
+      raise "Must implement deserialize in the concrete resolution module"
     end
 
     def from_seconds
-      raise MethodNotImplementedException
+      raise "Must implement from_seconds in the concrete resolution module"
+    end
+
+    def add
+      raise "Must implement to_seconds in the concrete resolution module"
     end
 
     def normalize
-      raise MethodNotImplementedException
+      raise "Must implement normalize in the concrete resolution module"
     end
   end
 end

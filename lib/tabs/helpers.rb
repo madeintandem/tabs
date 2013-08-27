@@ -7,7 +7,7 @@ module Tabs
       dt = period.first
       [].tap do |arr|
         arr << dt
-        while (dt = dt + 1.send(resolution)) <= period.last
+        while (dt = Tabs::Resolution.add(resolution, dt, 1)) <= period.last
           arr << dt.utc
         end
       end

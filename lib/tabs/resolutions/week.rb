@@ -17,8 +17,12 @@ module Tabs
         self.normalize(dt)
       end
 
-      def from_seconds(s)
-        s / 432000
+      def seconds(s)
+        s / 1.week
+      end
+
+      def add(ts, num)
+        ts + num.weeks
       end
 
       def normalize(ts)

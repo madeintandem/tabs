@@ -22,6 +22,10 @@ module WellFormedResolution
     s / 1
   end
 
+  def add(ts, num)
+    ts + num.seconds
+  end
+
   def normalize(ts)
     Time.utc(ts.year, ts.month, ts.day, ts.hour, ts.min, ts.sec)
   end
