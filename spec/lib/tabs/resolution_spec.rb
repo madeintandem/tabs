@@ -24,6 +24,27 @@ describe Tabs::Resolution do
       it "raises an error when method not implemented" do
         expect{BadlyFormedResolution.normalize}.to raise_error
       end
+
+      it "disregards already registered resolutions" do
+        expect { Tabs::Resolution.register(:minute, Tabs::Resolutions::Minute) }.to_not raise_error
+      end
+    end
+  end
+
+  describe "#unregister" do
+    it "unregisters a single resolution" do
+      Tabs::Resolution.unregister(:minute)
+      expect(Tabs::Resolution.all).to_not include(:minute)
+    end
+
+    it "unregisters an array of resolutions" do
+      Tabs::Resolution.unregister([:minute, :hour])
+      expect(Tabs::Resolution.all).to_not include(:hour)
+      expect(Tabs::Resolution.all).to_not include(:minute)
+    end
+
+    it "disregards passing in an unrecognized resolution" do
+      expect { Tabs::Resolution.unregister(:invalid_resolution) }.to_not raise_error
     end
   end
 end

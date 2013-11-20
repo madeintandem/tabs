@@ -26,5 +26,9 @@ module Tabs
       Tabs::Resolution.register(resolution, klass)
     end
 
+    def unregister_resolutions(*resolutions)
+      Tabs::Resolution.unregister(resolutions)
+    end
+
   end
 end

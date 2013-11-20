@@ -25,6 +25,13 @@ describe Tabs::Metrics::Counter do
       expect(stats).to include({ "timestamp" => time, "count" => 1 })
     end
 
+    it "raises ResolutionMissingError if unregistered resolution requested" do
+      time = Time.utc(now.year, now.month, now.day, now.hour) - 2.hours
+      metric.increment(time)
+      Tabs::Resolution.unregister(:hour)
+      expect { metric.stats(((now - 3.hours)..now), :hour) }.to raise_error(Tabs::ResolutionMissingError)
+    end
+
   end
 
   describe "total count" do

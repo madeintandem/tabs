@@ -8,6 +8,11 @@ module Tabs
       @@resolution_classes[resolution] = klass
     end
 
+    def unregister(resolutions)
+      resolutions = Array[resolutions].flatten
+      resolutions.each{ |res| @@resolution_classes.delete(res) }
+    end
+
     def serialize(resolution, timestamp)
       resolution_klass(resolution).serialize(timestamp)
     end
@@ -32,18 +37,24 @@ module Tabs
       @@resolution_classes.keys
     end
 
+    def register_default_resolutions
+      Tabs::Resolution.register(:minute, Tabs::Resolutions::Minute)
+      Tabs::Resolution.register(:hour, Tabs::Resolutions::Hour)
+      Tabs::Resolution.register(:day, Tabs::Resolutions::Day)
+      Tabs::Resolution.register(:week, Tabs::Resolutions::Week)
+      Tabs::Resolution.register(:month, Tabs::Resolutions::Month)
+      Tabs::Resolution.register(:year, Tabs::Resolutions::Year)
+    end
+
     private
 
     def resolution_klass(resolution)
-      @@resolution_classes[resolution]
+      klass = @@resolution_classes[resolution]
+      raise Tabs::ResolutionMissingError.new(resolution) unless klass
+      klass
     end
 
   end
 end
 
-Tabs::Resolution.register(:minute, Tabs::Resolutions::Minute)
-Tabs::Resolution.register(:hour, Tabs::Resolutions::Hour)
-Tabs::Resolution.register(:day, Tabs::Resolutions::Day)
-Tabs::Resolution.register(:week, Tabs::Resolutions::Week)
-Tabs::Resolution.register(:month, Tabs::Resolutions::Month)
-Tabs::Resolution.register(:year, Tabs::Resolutions::Year)
+Tabs::Resolution.register_default_resolutions

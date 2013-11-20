@@ -269,6 +269,14 @@ Tabs::Resolution.register(:second, SecondResolution)
 # or, you can use the config block described below
 ```
 
+#### Removing a Resolution
+
+You can also remove any resolution (custom or built-in) by calling the `unregister_resolutions` method in the config block (see config section below).  Or, you can remove manually by calling:
+
+```ruby
+Tabs::Resolution.unregister(:minute, :hour)
+```
+
 ### Inspecting Metrics
 
 You can list all metrics using `list_metrics`:
@@ -325,6 +333,9 @@ Tabs.configure do |config|
 
   # registers a custom resolution
   config.register_resolution :second, SecondResolution
+
+  # unregisters any resolution
+  config.unregister_resolutions(:minute, :hour)
 
 end
 ```

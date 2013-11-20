@@ -2,10 +2,11 @@ module Tabs
   extend self
   extend Tabs::Storage
 
-  class UnknownTypeError < Exception; end
-  class DuplicateMetricError < Exception; end
-  class UnknownMetricError < Exception; end
-  class MetricTypeMismatchError < Exception; end
+  class UnknownTypeError < StandardError; end
+  class DuplicateMetricError < StandardError; end
+  class UnknownMetricError < StandardError; end
+  class MetricTypeMismatchError < StandardError; end
+  class ResolutionMissingError < StandardError; end
 
   METRIC_TYPES = ["counter", "value", "task"]
 
