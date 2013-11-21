@@ -30,5 +30,17 @@ module Tabs
       Tabs::Resolution.unregister(resolutions)
     end
 
+    def expires_in
+      @expires_in ||= {}
+    end
+
+    def expire_resolutions(resolution_hash)
+      resolution_hash.each do |resolution, expires_in_seconds|
+        raise Tabs::ResolutionMissingError.new(resolution) unless Tabs::Resolution.all.include? resolution
+
+        expires_in[resolution] = expires_in_seconds
+      end
+    end
+
   end
 end
