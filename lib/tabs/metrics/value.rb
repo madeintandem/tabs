@@ -13,18 +13,15 @@ module Tabs
       def record(value, timestamp=Time.now)
         timestamp.utc
         Tabs::Resolution.all.each do |resolution|
-          formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-          stat_key = "stat:value:#{key}:data:#{formatted_time}"
-          update_values(stat_key, value)
+          update_values(storage_key(resolution, timestamp), value)
         end
         true
       end
 
       def stats(period, resolution)
         timestamps = timestamp_range period, resolution
-        keys = timestamps.map do |ts|
-          formatted_time = Tabs::Resolution.serialize(resolution, ts)
-          "stat:value:#{key}:data:#{formatted_time}"
+        keys = timestamps.map do |timestamp|
+          storage_key(resolution, timestamp)
         end
 
         values = mget(*keys).map do |v|
@@ -41,7 +38,16 @@ module Tabs
         del_by_prefix("stat:value:#{key}")
       end
 
+      def drop_by_resolution!(resolution)
+        del_by_prefix("stat:value:#{key}:data:#{resolution}")
+      end
+
       private
+
+      def storage_key(resolution, timestamp)
+        formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
+        "stat:value:#{key}:data:#{resolution}:#{formatted_time}"
+      end
 
       def update_values(stat_key, value)
         count = update_count(stat_key)

@@ -14,13 +14,13 @@ module Tabs
 
         def start(timestamp=Time.now)
           self.start_time = timestamp.utc
-          sadd("stat:task:#{key}:tokens", token)
+          sadd(tokens_storage_key, token)
           Tabs::Resolution.all.each { |res| record_start(res, start_time) }
         end
 
         def complete(timestamp=Time.now)
           self.complete_time = timestamp.utc
-          unless sismember("stat:task:#{key}:tokens", token)
+          unless sismember(tokens_storage_key, token)
             raise UnstartedTaskMetricError.new("No task for metric '#{key}' was started with token '#{token}'")
           end
           Tabs::Resolution.all.each { |res| record_complete(res, complete_time) }
@@ -40,32 +40,47 @@ module Tabs
 
         private
 
-        def record_start(resolution, timestamp)
+        def storage_key(resolution, timestamp, type)
           formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-          sadd("stat:task:#{key}:started:#{formatted_time}", token)
+          "stat:task:#{key}:#{type}:#{resolution}:#{formatted_time}"
+        end
+
+        def started_storage_key
+          "stat:task:#{key}:#{token}:started_time"
+        end
+
+        def completed_storage_key
+          "stat:task:#{key}:#{token}:completed_time"
+        end
+
+        def tokens_storage_key
+          "stat:task:#{key}:tokens"
+        end
+
+        def record_start(resolution, timestamp)
+          sadd(storage_key(resolution, timestamp, "started"), token)
         end
 
         def record_complete(resolution, timestamp)
-          formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-          sadd("stat:task:#{key}:completed:#{formatted_time}", token)
+          sadd(storage_key(resolution, timestamp, "completed"), token)
         end
 
         def start_time=(timestamp)
-          set("stat:task:#{key}:#{token}:started_time", timestamp)
+          set(started_storage_key, timestamp)
           @start_time = timestamp
         end
 
         def start_time
-          Time.parse(get("stat:task:#{key}:#{token}:started_time"))
+          Time.parse(get(started_storage_key))
         end
 
         def complete_time=(timestamp)
-          set("stat:task:#{key}:#{token}:completed_time", timestamp)
+          set(completed_storage_key, timestamp)
           @complete_time = timestamp
         end
 
         def complete_time
-          Time.parse(get("stat:task:#{key}:#{token}:completed_time"))
+          Time.parse(get(completed_storage_key))
         end
 
       end

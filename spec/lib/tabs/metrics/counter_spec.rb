@@ -55,6 +55,8 @@ describe Tabs::Metrics::Counter do
 
     def create_span(time_unit)
       metric.increment
+      Timecop.freeze(now + 1.send(time_unit))
+      metric.increment
       Timecop.freeze(now + 3.send(time_unit))
       metric.increment
       Timecop.freeze(now + 6.send(time_unit))
@@ -101,7 +103,7 @@ describe Tabs::Metrics::Counter do
     it "returns zeros for time periods which do not have any events" do
       create_span(:days)
       stats = metric.stats(now..(now + 7.days), :day)
-      expect(stats).to include({ "timestamp" => (now + 1.day), "count" => 0 })
+      expect(stats.detect{|s| s["timestamp"] == (now + 2.day)}["count"]).to eq(0)
     end
 
     context "for weekly metrics" do
@@ -113,6 +115,7 @@ describe Tabs::Metrics::Counter do
       it "returns the expected results for a weekly metric" do
         create_span(:weeks)
         stats = metric.stats(period, :week)
+        expect(stats.detect{|s| s["timestamp"] == (now + 1.week).beginning_of_week}["count"]).to eq(1)
         expect(stats).to include({ "timestamp" => (now + 3.weeks).beginning_of_week, "count" => 1 })
         expect(stats).to include({ "timestamp" => (now + 6.weeks).beginning_of_week, "count" => 2 })
       end
@@ -155,6 +158,19 @@ describe Tabs::Metrics::Counter do
       end
     end
 
+  end
+
+  describe ".drop_by_resolution!" do
+    before do
+      Timecop.freeze(now)
+      2.times { metric.increment }
+      metric.drop_by_resolution!(:minute)
+    end
+
+    it "deletes all metrics for a resolution" do
+      stats = metric.stats((now - 1.minute)..(now + 1.minute), :minute)
+      expect(stats.total).to eq(0)
+    end    
   end
 
 end

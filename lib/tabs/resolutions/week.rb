@@ -17,7 +17,7 @@ module Tabs
         self.normalize(dt)
       end
 
-      def seconds(s)
+      def from_seconds(s)
         s / 1.week
       end
 

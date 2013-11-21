@@ -21,8 +21,8 @@ module Tabs
 
       def stats(period, resolution)
         timestamps = timestamp_range period, resolution
-        keys = timestamps.map do |ts|
-          "stat:counter:#{key}:count:#{Tabs::Resolution.serialize(resolution, ts)}"
+        keys = timestamps.map do |timestamp|
+          storage_key(resolution, timestamp)
         end
 
         values = mget(*keys).map do |v|
@@ -43,12 +43,19 @@ module Tabs
         del_by_prefix("stat:counter:#{key}")
       end
 
+      def drop_by_resolution!(resolution)
+        del_by_prefix("stat:counter:#{key}:count:#{resolution}")
+      end
+
       private
 
-      def increment_resolution(resolution, timestamp)
+      def storage_key(resolution, timestamp)
         formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
-        stat_key = "stat:counter:#{key}:count:#{formatted_time}"
-        incr(stat_key)
+        "stat:counter:#{key}:count:#{resolution}:#{formatted_time}"
+      end
+
+      def increment_resolution(resolution, timestamp)
+        incr(storage_key(resolution, timestamp))
       end
 
       def increment_total

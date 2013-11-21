@@ -53,16 +53,18 @@ module Tabs
 
       private
 
+      def storage_key(resolution, timestamp, type)
+        formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
+        "stat:task:#{key}:#{type}:#{resolution}:#{formatted_time}"
+      end
+
       def tokens_for_period(range, resolution, type)
         keys = keys_for_range(range, resolution, type)
         mget(*keys).compact.map(&:to_a).flatten.map { |t| Token.new(t, key) }
       end
 
       def keys_for_range(range, resolution, type)
-        range.map do |date|
-          formatted_time = Tabs::Resolution.serialize(resolution, date)
-          "stat:task:#{key}:#{type}:#{formatted_time}"
-        end
+        range.map { |timestamp| storage_key(resolution, timestamp, type) }
       end
 
     end

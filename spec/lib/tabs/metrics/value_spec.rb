@@ -40,6 +40,8 @@ describe Tabs::Metrics::Value do
 
     def create_span(time_unit)
       metric.record(5)
+      Timecop.freeze(now + 1.send(time_unit))
+      metric.record(25)
       Timecop.freeze(now + 3.send(time_unit))
       metric.record(10)
       Timecop.freeze(now + 6.send(time_unit))
@@ -78,6 +80,8 @@ describe Tabs::Metrics::Value do
     it "returns the expected results for a weekly metric" do
       create_span(:weeks)
       stats = metric.stats(now..(now + 7.weeks), :week)
+      second_week_stats = stats.detect{|s| s["timestamp"] == (now + 1.week).beginning_of_week }
+      expect(second_week_stats["count"]).to eq(1)
       expect(stats).to include({ "timestamp" => (now + 3.weeks).beginning_of_week, "count"=>1, "min"=>10, "max"=>10, "sum"=>10, "avg"=>10})
       expect(stats).to include({ "timestamp" => (now + 6.weeks).beginning_of_week, "count"=>2, "min"=>15, "max"=>20, "sum"=>35, "avg"=>17.5})
     end
@@ -119,6 +123,19 @@ describe Tabs::Metrics::Value do
       end
     end
 
+  end
+
+  describe ".drop_by_resolution!" do
+    before do
+      Timecop.freeze(now)
+      2.times { metric.record(rand(30)) }
+      metric.drop_by_resolution!(:minute)
+    end
+
+    it "deletes all metrics for a resolution" do
+      stats = metric.stats((now - 1.minute)..(now + 1.minute), :minute)
+      expect(stats.sum).to eq(0)
+    end    
   end
 
 end

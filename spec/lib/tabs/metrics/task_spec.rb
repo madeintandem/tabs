@@ -63,6 +63,25 @@ describe Tabs::Metrics::Task do
       Timecop.freeze(now + 3.minutes)
       metric.complete(token_3)
       stats = metric.stats((now - 5.minutes)..(now + 5.minutes), :minute)
+
+      expect(stats.started_within_period).to eq 3
+      expect(stats.completed_within_period).to eq 2
+      expect(stats.started_and_completed_within_period).to eq 2
+      expect(stats.completion_rate).to eq 0.18182
+      expect(stats.average_completion_time).to eq 1.5
+    end
+
+    it "returns the expected value for a week" do
+      Timecop.freeze(now)
+      metric.start(token_1)
+      metric.start(token_2)
+      Timecop.freeze(now + 1.week)
+      metric.complete(token_1)
+      metric.start(token_3)
+      Timecop.freeze(now + 3.weeks)
+      metric.complete(token_3)
+      stats = metric.stats((now - 5.weeks)..(now + 5.weeks), :week)
+
       expect(stats.started_within_period).to eq 3
       expect(stats.completed_within_period).to eq 2
       expect(stats.started_and_completed_within_period).to eq 2
