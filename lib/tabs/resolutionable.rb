@@ -21,5 +21,11 @@ module Tabs
     def normalize
       raise "Must implement normalize in the concrete resolution module"
     end
+
+    def expire(key, timestamp)
+      return unless expires?
+      Storage.expire_at(key, timestamp + to_seconds + expires_in)
+    end
+
   end
 end

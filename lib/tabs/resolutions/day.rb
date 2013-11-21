@@ -27,6 +27,14 @@ module Tabs
         Time.utc(ts.year, ts.month, ts.day)
       end
 
+      def expires_in
+        Tabs::Config.expires_in[:day]
+      end
+
+      def expires?
+        Tabs::Config.expires_in.key?(:day)
+      end
+
     end
   end
 end
