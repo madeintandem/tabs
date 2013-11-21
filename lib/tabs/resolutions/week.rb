@@ -4,10 +4,10 @@ module Tabs
       extend Tabs::Resolutionable
       extend self
 
-      PATTERN = "%Y-%W"
+      PATTERN = "%Y-%m-%d"
 
       def serialize(timestamp)
-        timestamp.strftime(PATTERN)
+        normalize(timestamp).strftime(PATTERN)
       end
 
       def deserialize(str)
