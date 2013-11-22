@@ -213,6 +213,10 @@ module SecondResolution
 
   PATTERN = "%Y-%m-%d-%H-%M-%S"
 
+  def name
+    :seconds
+  end
+  
   def serialize(timestamp)
     timestamp.strftime(PATTERN)
   end
@@ -224,6 +228,10 @@ module SecondResolution
 
   def from_seconds(s)
     s / 1
+  end
+  
+  def to_seconds
+    1
   end
 
   def add(timestamp, num_of_seconds)
@@ -239,6 +247,8 @@ end
 
 A little description on each of the above methods:
 
+*`name`*: unique symbol used to reference registered resolution
+
 *`serialize`*: converts the timestamp to a string.  The return value
 here will be used as part of the Redis key storing values associated
 with a given metric.
@@ -249,6 +259,8 @@ into an actual DateTime value.
 *`from_seconds`*: should return the number of periods in the given
 number of seconds.  For example, there are 60 seconds in a minute.
 
+*`to_seconds`*: should return the number of seconds in '1' of these time periods.  For example, there are 3600 seconds in an hour.
+
 *`add`*: should add the number of seconds in the given resolution to the
 supplied timestamp.
 
@@ -256,7 +268,7 @@ supplied timestamp.
 For example, the week resolution returns the first hour of the first day
 of the week.
 
-*NOTE: If you're doing a custom resolution you should probably look into
+*NOTE: If you're doing a custom resolution, you should probably look into
 the code a bit.*
 
 Once you have a module that conforms to the resolution protocol you need
@@ -308,11 +320,27 @@ Tabs.drop_metric!("website-visits")
 
 This will drop all recorded values for the metric so it may not be un-done...be careful.
 
+To drop only a specific resolution for a metric, just call `Tabs#drop_metric_by_resolution!`
+
+```ruby
+Tabs.drop_metric_by_resolution!("website-visits", :minute)
+```
+
 Even more dangerous, you can drop all metrics...be very careful.
 
 ```ruby
 Tabs.drop_all_metrics!
 ```
+### Aging Out Old Metrics
+
+You can use the expiration features to age out old metrics that may no longer be in your operational data set.  For example, you may want to keep monthly or yearly data around but the minute or day level data isn't necessary past a certain date.  You can set expirations for any resolution:
+
+```ruby
+Tabs.configure do |config|
+	config.set_expirations(minute: 1.day, day: 1.week)
+end
+```
+
 
 ### Configuration
 
@@ -326,6 +354,10 @@ Tabs.configure do |config|
 
   # pass a config hash that will be passed to Redis.new
   config.redis = { :host => 'localhost', :port => 6379 }
+  
+  # pass a prefix that will be used in addition to the "tabs" prefix with Redis keys
+  # Example: "tabs:my_app:metric_name"
+  config.prefix = "my_app"
 
   # override default decimal precision (5)
   # affects stat averages and task completion rate
@@ -336,6 +368,9 @@ Tabs.configure do |config|
 
   # unregisters any resolution
   config.unregister_resolutions(:minute, :hour)
+  
+  # sets TTL for redis keys of specific resolutions
+  config.set_expirations({ minute: 1.hour, hour: 1.day })
 
 end
 ```

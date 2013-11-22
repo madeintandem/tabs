@@ -22,6 +22,14 @@ module Tabs
       @redis ||= Redis.new
     end
 
+    def prefix=(arg)
+      @prefix = arg
+    end
+
+    def prefix
+      @prefix
+    end
+
     def register_resolution(klass)
       Tabs::Resolution.register(klass)
     end

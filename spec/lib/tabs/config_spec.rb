@@ -50,4 +50,11 @@ describe Tabs::Config do
     end
 
   end
+
+  context "#prefix" do
+    it "should allow custom prefix for tabs keys" do
+      Tabs::Config.prefix = "rspec"
+      expect(Tabs::Config.prefix).to eq("rspec")
+    end
+  end
 end
