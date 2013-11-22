@@ -138,6 +138,7 @@ describe Tabs do
     end
 
     it "calls record on the metric" do
+      Timecop.freeze(Time.now.utc)
       metric = Tabs.create_metric("foo", "value")
       Tabs.stub(get_metric: metric)
       metric.should_receive(:record).with(42, Time.now.utc)

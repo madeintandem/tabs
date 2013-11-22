@@ -10,4 +10,8 @@ RSpec.configure do |config|
   	Tabs::Resolution.register_default_resolutions
     Tabs::Storage.del_by_prefix("")
   end
+
+  config.after(:each) do
+    Timecop.return
+  end
 end

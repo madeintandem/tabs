@@ -27,10 +27,11 @@ describe Tabs::Resolutionable do
   end
 
   describe "#expire" do
+    let(:expires_setting){ 1.day }
 
     before do
       Tabs::Config.register_resolution(:test, TestResolution)
-      Tabs::Config.set_expirations(test: 1.day)
+      Tabs::Config.set_expirations(test: expires_setting)
     end
 
     after do
@@ -39,10 +40,11 @@ describe Tabs::Resolutionable do
     end
 
     it "sets the expiration for the given key" do
-      now = Time.new(2050, 1, 1, 0, 0)
+      now = Time.utc(2050, 1, 1, 0, 0)
       Tabs::Storage.set("foo", "bar")
       TestResolution.expire("foo", now)
-      expect(Tabs::Storage.ttl("foo")).to eq 1578032200
+      expire_date = Time.now + Tabs::Storage.ttl("foo")
+      expect(now + expires_setting).to eq expire_date.utc.change(hour: 0)
     end
 
   end
