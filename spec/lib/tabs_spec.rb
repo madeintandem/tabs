@@ -82,7 +82,7 @@ describe Tabs do
     end
 
     it "calls drop! on the metric" do
-      metric = stub(:metric)
+      metric = double(:metric)
       Tabs.stub(get_metric: metric)
       metric.should_receive(:drop!)
       Tabs.drop_metric!("foo")

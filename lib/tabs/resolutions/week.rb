@@ -15,9 +15,7 @@ module Tabs
       end
 
       def deserialize(str)
-        year, week = str.split("-").map(&:to_i)
-        week = 1 if week == 0
-        dt = DateTime.strptime("#{year}-#{week}", PATTERN)
+        dt = DateTime.strptime(str, PATTERN)
         self.normalize(dt)
       end
 
