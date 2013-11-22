@@ -59,6 +59,12 @@ module Tabs
       redis.smembers("tabs:#{key}")
     end
 
+    def smembers_all(*keys)
+      redis.pipelined do
+        keys.map{ |key| smembers(key)}
+      end
+    end
+
     def sismember(key, value)
       redis.sismember("tabs:#{key}", value)
     end

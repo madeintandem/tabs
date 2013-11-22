@@ -170,7 +170,7 @@ describe Tabs::Metrics::Counter do
     it "deletes all metrics for a resolution" do
       stats = metric.stats((now - 1.minute)..(now + 1.minute), :minute)
       expect(stats.total).to eq(0)
-    end    
+    end
   end
 
 end

@@ -37,7 +37,7 @@ module Tabs
         matching_tokens = started_tokens.select { |token| completed_tokens.include? token }
         completion_rate = (matching_tokens.size.to_f / range.size).round(Config.decimal_precision)
         elapsed_times = matching_tokens.map { |t| t.time_elapsed(resolution) }
-        average_completion_time = (elapsed_times.sum) / matching_tokens.size
+        average_completion_time = matching_tokens.blank? ? 0.0 : (elapsed_times.sum) / matching_tokens.size
         Stats.new(
           started_tokens.size,
           completed_tokens.size,
@@ -60,7 +60,7 @@ module Tabs
 
       def tokens_for_period(range, resolution, type)
         keys = keys_for_range(range, resolution, type)
-        mget(*keys).compact.map(&:to_a).flatten.map { |t| Token.new(t, key) }
+        smembers_all(*keys).compact.map(&:to_a).flatten.map { |t| Token.new(t, key) }
       end
 
       def keys_for_range(range, resolution, type)

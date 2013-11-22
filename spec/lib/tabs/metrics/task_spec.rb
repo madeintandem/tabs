@@ -52,6 +52,16 @@ describe Tabs::Metrics::Task do
 
   describe ".stats" do
 
+    it "returns zeroes across the board for no stats" do
+      stats = metric.stats((now - 5.minutes)..(now + 5.minutes), :minute)
+
+      expect(stats.started_within_period).to eq 0
+      expect(stats.completed_within_period).to eq 0
+      expect(stats.started_and_completed_within_period).to eq 0
+      expect(stats.completion_rate).to eq 0.0
+      expect(stats.average_completion_time).to eq 0.0
+    end
+
     it "returns the expected value" do
       Timecop.freeze(now)
       metric.start(token_1)

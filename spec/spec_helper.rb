@@ -1,6 +1,5 @@
 require "rubygems"
 require "tabs"
-require "fakeredis/rspec"
 require "pry"
 require "timecop"
 
