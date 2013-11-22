@@ -1,10 +1,14 @@
 module Tabs
   module Resolutions
     module Year
-      extend Tabs::Resolutionable
+      include Tabs::Resolutionable
       extend self
 
       PATTERN = "%Y"
+
+      def name
+        :year
+      end
 
       def serialize(timestamp)
         timestamp.strftime(PATTERN)
@@ -17,6 +21,10 @@ module Tabs
 
       def from_seconds(s)
         s / 1.year
+      end
+
+      def to_seconds
+        1.year
       end
 
       def add(ts, num)

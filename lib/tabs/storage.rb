@@ -10,6 +10,14 @@ module Tabs
       redis.get("tabs:#{key}")
     end
 
+    def expireat(key, unix_timestamp)
+      redis.expireat("tabs:#{key}", unix_timestamp)
+    end
+
+    def ttl(key)
+      redis.ttl("tabs:#{key}")
+    end
+
     def get(key)
       redis.get("tabs:#{key}")
     end

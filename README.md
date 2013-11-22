@@ -208,7 +208,7 @@ that's necessary is a module that conforms to the following protocol:
 
 ```ruby
 module SecondResolution
-  extend Tabs::Resolutionable
+  include Tabs::Resolutionable
   extend self
 
   PATTERN = "%Y-%m-%d-%H-%M-%S"

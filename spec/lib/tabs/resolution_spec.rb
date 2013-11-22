@@ -2,6 +2,7 @@ require "spec_helper"
 require File.expand_path("../../../support/custom_resolutions", __FILE__)
 
 describe Tabs::Resolution do
+
   describe "#register" do
     it "registers a new resolution" do
       Tabs::Resolution.register(:test, Tabs::Resolutions::Minute)
@@ -47,4 +48,5 @@ describe Tabs::Resolution do
       expect { Tabs::Resolution.unregister(:invalid_resolution) }.to_not raise_error
     end
   end
+
 end

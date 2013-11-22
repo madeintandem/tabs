@@ -1,6 +1,6 @@
 module Tabs
   module Resolution
-    extend Resolutionable
+    include Resolutionable
     extend self
 
     def register(resolution, klass)

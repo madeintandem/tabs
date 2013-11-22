@@ -1,10 +1,14 @@
 module Tabs
   module Resolutions
     module Minute
-      extend Tabs::Resolutionable
+      include Tabs::Resolutionable
       extend self
 
       PATTERN = "%Y-%m-%d-%H-%M"
+
+      def name
+        :minute
+      end
 
       def serialize(timestamp)
         timestamp.strftime(PATTERN)
@@ -17,6 +21,10 @@ module Tabs
 
       def from_seconds(s)
         s / 1.minute
+      end
+
+      def to_seconds
+        1.minute
       end
 
       def add(ts, num)

@@ -1,10 +1,14 @@
 module Tabs
   module Resolutions
     module Day
-      extend Resolutionable
+      include Resolutionable
       extend self
 
       PATTERN = "%Y-%m-%d"
+
+      def name
+        :day
+      end
 
       def serialize(timestamp)
         timestamp.strftime(PATTERN)
@@ -19,20 +23,16 @@ module Tabs
         s / 1.day
       end
 
+      def to_seconds
+        1.day
+      end
+
       def add(ts, num)
         ts + num.days
       end
 
       def normalize(ts)
         Time.utc(ts.year, ts.month, ts.day)
-      end
-
-      def expires_in
-        Tabs::Config.expires_in[:day]
-      end
-
-      def expires?
-        Tabs::Config.expires_in.key?(:day)
       end
 
     end

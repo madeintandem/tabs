@@ -1,10 +1,14 @@
 module Tabs
   module Resolutions
     module Week
-      extend Tabs::Resolutionable
+      include Resolutionable
       extend self
 
       PATTERN = "%Y-%m-%d"
+
+      def name
+        :week
+      end
 
       def serialize(timestamp)
         normalize(timestamp).strftime(PATTERN)
@@ -19,6 +23,10 @@ module Tabs
 
       def from_seconds(s)
         s / 1.week
+      end
+
+      def to_seconds
+        1.week
       end
 
       def add(ts, num)

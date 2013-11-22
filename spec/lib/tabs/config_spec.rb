@@ -32,16 +32,22 @@ describe Config do
   	end
   end
 
-  context "#expire_resolutions" do
+  context "#set_expirations" do
+
+    after do
+      Tabs::Config.reset_expirations
+    end
+
     it "should allow multiple resolutions to be expired" do
-      Tabs::Config.expire_resolutions({ minute: 1.day, hour: 1.week })
-      expect(Tabs::Config.expires_in[:minute]).to eq(1.day)
-      expect(Tabs::Config.expires_in[:hour]).to eq(1.week)
+      Tabs::Config.set_expirations({ minute: 1.day, hour: 1.week })
+      expect(Tabs::Config.expiration_settings[:minute]).to eq(1.day)
+      expect(Tabs::Config.expiration_settings[:hour]).to eq(1.week)
     end
 
     it "should raise ResolutionMissingError if expiration passed in for invalid resolution" do
-      expect{ Tabs::Config.expire_resolutions({ missing_resolution: 1.day }) }
+      expect{ Tabs::Config.set_expirations({ missing_resolution: 1.day }) }
         .to raise_error(Tabs::ResolutionMissingError)
     end
+
   end
 end

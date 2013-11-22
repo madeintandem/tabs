@@ -1,10 +1,10 @@
 module BadlyFormedResolution
-  extend Tabs::Resolutionable
+  include Tabs::Resolutionable
   extend self
 end
 
 module WellFormedResolution
-  extend Tabs::Resolutionable
+  include Tabs::Resolutionable
   extend self
 
   PATTERN = "%Y-%m-%d-%H-%M-%S"
