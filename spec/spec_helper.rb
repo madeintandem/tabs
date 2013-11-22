@@ -9,6 +9,6 @@ RSpec.configure do |config|
 
   config.before(:each) do
   	Tabs::Resolution.register_default_resolutions
-    Redis.current.flushdb
+    Tabs::Storage.del_by_prefix("")
   end
 end
