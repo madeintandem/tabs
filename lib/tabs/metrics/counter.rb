@@ -47,15 +47,17 @@ module Tabs
         del_by_prefix("stat:counter:#{key}:count:#{resolution}")
       end
 
-      private
-
       def storage_key(resolution, timestamp)
         formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
         "stat:counter:#{key}:count:#{resolution}:#{formatted_time}"
       end
 
+      private
+
       def increment_resolution(resolution, timestamp)
-        incr(storage_key(resolution, timestamp))
+        store_key = storage_key(resolution, timestamp)
+        incr(store_key)
+        Tabs::Resolution.expire(resolution, store_key, timestamp)
       end
 
       def increment_total

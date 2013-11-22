@@ -13,7 +13,9 @@ module Tabs
       def record(value, timestamp=Time.now)
         timestamp.utc
         Tabs::Resolution.all.each do |resolution|
-          update_values(storage_key(resolution, timestamp), value)
+          store_key = storage_key(resolution, timestamp)
+          update_values(store_key, value)
+          Tabs::Resolution.expire(resolution, store_key, timestamp)
         end
         true
       end
@@ -41,12 +43,12 @@ module Tabs
         del_by_prefix("stat:value:#{key}:data:#{resolution}")
       end
 
-      private
-
       def storage_key(resolution, timestamp)
         formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
         "stat:value:#{key}:data:#{resolution}:#{formatted_time}"
       end
+
+      private
 
       def update_values(stat_key, value)
         hash = get_current_hash(stat_key)

@@ -51,12 +51,12 @@ module Tabs
         del_by_prefix("stat:task:#{key}")
       end
 
-      private
-
       def storage_key(resolution, timestamp, type)
         formatted_time = Tabs::Resolution.serialize(resolution, timestamp)
         "stat:task:#{key}:#{type}:#{resolution}:#{formatted_time}"
       end
+
+      private
 
       def tokens_for_period(range, resolution, type)
         keys = keys_for_range(range, resolution, type)

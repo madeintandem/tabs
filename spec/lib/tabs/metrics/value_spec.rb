@@ -138,4 +138,23 @@ describe Tabs::Metrics::Value do
     end
   end
 
+  describe "expiration of value metrics" do
+    let(:expires_setting){ 6.hours }
+    let(:now){ Time.utc(2050, 1, 1, 0, 0) }
+
+    before do
+      Tabs::Config.set_expirations({ minute: expires_setting })
+    end
+
+    after do
+      Tabs::Config.reset_expirations
+    end
+
+    it "sets an expiration when recording a value" do
+      metric.record(17, now)
+      redis_expire_date = Time.now + Tabs::Storage.ttl(metric.storage_key(:minute, now))
+      expire_date = now + expires_setting + Tabs::Resolutions::Minute.to_seconds
+      expect(redis_expire_date).to be_within(2.seconds).of(expire_date)
+    end
+  end
 end

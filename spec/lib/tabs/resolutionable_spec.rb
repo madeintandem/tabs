@@ -40,11 +40,12 @@ describe Tabs::Resolutionable do
     end
 
     it "sets the expiration for the given key" do
-      now = Time.utc(2050, 1, 1, 0, 0)
+      now = Time.utc(2050, 1, 1, 0, 0, 0)
       Tabs::Storage.set("foo", "bar")
       TestResolution.expire("foo", now)
-      expire_date = Time.now + Tabs::Storage.ttl("foo")
-      expect(now + expires_setting).to eq expire_date.utc.change(hour: 0)
+      redis_expire_date = Time.now + Tabs::Storage.ttl("foo")
+      expire_date = now + expires_setting + TestResolution.to_seconds
+      expect(redis_expire_date).to be_within(2.seconds).of(expire_date)
     end
 
   end
