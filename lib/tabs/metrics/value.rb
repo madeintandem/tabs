@@ -67,23 +67,23 @@ module Tabs
 
       def increment(hash, value)
         hash["count"] += 1
-        hash["sum"] += value
+        hash["sum"] += value.to_f
       end
 
       def update_min(hash, value)
-        hash["min"] = value if hash["min"].nil? || value < hash["min"]
+        hash["min"] = value.to_f if hash["min"].nil? || value.to_f < hash["min"]
       end
 
       def update_max(hash, value)
-        hash["max"] = value if hash["max"].nil? || value > hash["max"]
+        hash["max"] = value.to_f if hash["max"].nil? || value.to_f > hash["max"]
       end
 
       def update_avg(hash)
-        hash["avg"] = hash["sum"].to_f / hash["count"].to_f
+        hash["avg"] = hash["sum"].to_f / hash["count"]
       end
 
       def default_value(nil_value=nil)
-        { "count" => 0, "min" => nil_value, "max" => nil_value, "sum" => 0, "avg" => 0 }
+        { "count" => 0, "min" => nil_value, "max" => nil_value, "sum" => 0.0, "avg" => 0.0 }
       end
 
     end
