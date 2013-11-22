@@ -264,7 +264,7 @@ to register it with Tabs.  You can do this in one of two ways:
 
 ```ruby
 # This call can be anywhere before you start using tabs
-Tabs::Resolution.register(:second, SecondResolution)
+Tabs::Resolution.register(SecondResolution)
 
 # or, you can use the config block described below
 ```

@@ -3,9 +3,9 @@ module Tabs
     include Resolutionable
     extend self
 
-    def register(resolution, klass)
+    def register(klass)
       @@resolution_classes ||= {}
-      @@resolution_classes[resolution] = klass
+      @@resolution_classes[klass.name] = klass
     end
 
     def unregister(resolutions)
@@ -37,13 +37,18 @@ module Tabs
       @@resolution_classes.keys
     end
 
-    def register_default_resolutions
-      Tabs::Resolution.register(:minute, Tabs::Resolutions::Minute)
-      Tabs::Resolution.register(:hour, Tabs::Resolutions::Hour)
-      Tabs::Resolution.register(:day, Tabs::Resolutions::Day)
-      Tabs::Resolution.register(:week, Tabs::Resolutions::Week)
-      Tabs::Resolution.register(:month, Tabs::Resolutions::Month)
-      Tabs::Resolution.register(:year, Tabs::Resolutions::Year)
+    def expire(resolution, key, timestamp)
+      resolution_klass(resolution).expire(key, timestamp)
+    end
+
+    def reset_default_resolutions
+      @@resolution_classes = {}
+      Tabs::Resolution.register(Tabs::Resolutions::Minute)
+      Tabs::Resolution.register(Tabs::Resolutions::Hour)
+      Tabs::Resolution.register(Tabs::Resolutions::Day)
+      Tabs::Resolution.register(Tabs::Resolutions::Week)
+      Tabs::Resolution.register(Tabs::Resolutions::Month)
+      Tabs::Resolution.register(Tabs::Resolutions::Year)
     end
 
     private
@@ -57,4 +62,4 @@ module Tabs
   end
 end
 
-Tabs::Resolution.register_default_resolutions
+Tabs::Resolution.reset_default_resolutions

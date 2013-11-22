@@ -30,7 +30,7 @@ describe Tabs::Resolutionable do
     let(:expires_setting){ 1.day }
 
     before do
-      Tabs::Config.register_resolution(:test, TestResolution)
+      Tabs::Config.register_resolution(TestResolution)
       Tabs::Config.set_expirations(test: expires_setting)
     end
 

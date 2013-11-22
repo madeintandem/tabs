@@ -20,7 +20,7 @@ describe Tabs::Config do
 
   context "#register_resolution" do
   	it "should register a resolution" do
-	  	Tabs::Resolution.register(:seconds, WellFormedResolution)
+	  	Tabs::Resolution.register(WellFormedResolution)
 	  	expect(Tabs::Resolution.all).to include(:seconds)
   	end
   end

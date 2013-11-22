@@ -9,6 +9,10 @@ module WellFormedResolution
 
   PATTERN = "%Y-%m-%d-%H-%M-%S"
 
+  def name
+    :seconds
+  end
+
   def serialize(timestamp)
     timestamp.strftime(PATTERN)
   end
@@ -20,6 +24,10 @@ module WellFormedResolution
 
   def from_seconds(s)
     s / 1
+  end
+
+  def to_seconds
+    1
   end
 
   def add(ts, num)

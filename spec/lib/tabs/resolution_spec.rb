@@ -5,8 +5,8 @@ describe Tabs::Resolution do
 
   describe "#register" do
     it "registers a new resolution" do
-      Tabs::Resolution.register(:test, Tabs::Resolutions::Minute)
-      expect(Tabs::Resolution.all).to include :test
+      Tabs::Resolution.register(WellFormedResolution)
+      expect(Tabs::Resolution.all).to include WellFormedResolution.name
     end
 
     context "with a custom resolution" do
@@ -15,7 +15,7 @@ describe Tabs::Resolution do
       end
 
       it "gets stats for custom resolution" do
-        Tabs::Resolution.register(:seconds, WellFormedResolution)
+        Tabs::Resolution.register(WellFormedResolution)
         Timecop.freeze(Time.now)
 
         Tabs.increment_counter("foo")
@@ -27,7 +27,7 @@ describe Tabs::Resolution do
       end
 
       it "disregards already registered resolutions" do
-        expect { Tabs::Resolution.register(:minute, Tabs::Resolutions::Minute) }.to_not raise_error
+        expect { Tabs::Resolution.register(Tabs::Resolutions::Minute) }.to_not raise_error
       end
     end
   end
