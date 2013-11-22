@@ -1,7 +1,7 @@
 module Tabs
   module Resolutions
     module Week
-      include Resolutionable
+      include Tabs::Resolutionable
       extend self
 
       PATTERN = "%Y-%m-%d"
