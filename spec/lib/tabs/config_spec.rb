@@ -1,7 +1,7 @@
 require "spec_helper"
 require File.expand_path("../../../support/custom_resolutions", __FILE__)
 
-describe Config do
+describe Tabs::Config do
   context "#decimal_precision" do
 
   	before do

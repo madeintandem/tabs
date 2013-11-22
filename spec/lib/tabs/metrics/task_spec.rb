@@ -10,7 +10,7 @@ describe Tabs::Metrics::Task do
 
   describe ".start" do
 
-    let(:token) { stub(:token) }
+    let(:token) { double(:token) }
     let(:time) { Time.now }
 
     it "calls start on the given token" do
@@ -29,11 +29,10 @@ describe Tabs::Metrics::Task do
 
   describe ".complete" do
 
-    let(:token) { stub(:token) }
+    let(:token) { double(:token) }
     let(:time) { Time.now }
 
     it "calls complete on the given token" do
-      token = stub(:token)
       Tabs::Metrics::Task::Token.should_receive(:new).with(token_1, "foo").and_return(token)
       token.should_receive(:complete)
       metric.complete(token_1)
