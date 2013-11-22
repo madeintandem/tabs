@@ -12,6 +12,7 @@ Gem::Specification.new do |gem|
   gem.description   = %q{A redis-backed metrics tracker for keeping tabs on pretty much anything ;)}
   gem.summary       = %q{A redis-backed metrics tracker for keeping tabs on pretty much anything ;)}
   gem.homepage      = "https://github.com/devmynd/tabs"
+  gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
