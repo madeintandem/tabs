@@ -216,7 +216,7 @@ module SecondResolution
   def name
     :seconds
   end
-  
+
   def serialize(timestamp)
     timestamp.strftime(PATTERN)
   end
@@ -229,7 +229,7 @@ module SecondResolution
   def from_seconds(s)
     s / 1
   end
-  
+
   def to_seconds
     1
   end
@@ -337,7 +337,7 @@ You can use the expiration features to age out old metrics that may no longer be
 
 ```ruby
 Tabs.configure do |config|
-	config.set_expirations(minute: 1.day, day: 1.week)
+  config.set_expirations(minute: 1.day, day: 1.week)
 end
 ```
 
@@ -358,7 +358,7 @@ Tabs.configure do |config|
 
   # pass a config hash that will be passed to Redis.new
   config.redis = { :host => 'localhost', :port => 6379 }
-  
+
   # pass a prefix that will be used in addition to the "tabs" prefix with Redis keys
   # Example: "tabs:my_app:metric_name"
   config.prefix = "my_app"
@@ -372,7 +372,7 @@ Tabs.configure do |config|
 
   # unregisters any resolution
   config.unregister_resolutions(:minute, :hour)
-  
+
   # sets TTL for redis keys of specific resolutions
   config.set_expirations({ minute: 1.hour, hour: 1.day })
 
@@ -431,8 +431,8 @@ continue to use v0.8.1 or lower if that is an issue.
 _WARNING: Version 1.0.0 is not compatible with previous versions of
 Tabs_
 
-We have made a number of changes related to hour metric keys are stored
-in Redis.  At this point we'll be following semantec versioning and will
+We have made a number of changes related to how our metric keys are stored
+in Redis.  At this point we'll be following semantic versioning and will
 support backwards compatability between major versions.  In this release
 we've added a number of major features:
 
