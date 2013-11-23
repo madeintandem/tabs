@@ -341,7 +341,7 @@ Tabs.configure do |config|
 end
 ```
 
-The expiration date will start counting at the beginning at the end of the given resolution.  Meaning that for a month resolution the given expiration time would start at the end of a given month.  A month resolution metric recorded in January with an expiration of 2 weeks would expire after the 2nd week of February.
+The expiration date will start counting at the beginning of the end of the given resolution.  Meaning that for a month resolution the given expiration time would start at the end of a given month.  A month resolution metric recorded in January with an expiration of 2 weeks would expire after the 2nd week of February.
 
 *NOTE: You cannot expire task metrics at this time, only counter and
 values.*
