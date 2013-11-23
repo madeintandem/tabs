@@ -21,9 +21,9 @@ Gem::Specification.new do |gem|
 
   gem.post_install_message = <<EOS
 Tabs v1.0.0 - BREAKING CHANGES:
-Please review the set of breaking changes in the README.  Now that we have
-achieved 1.0 we will follow semantic versioning and will not break backwards
-compatibility on the main gem release.
+Please review the 'Change Log & Breaking Changes' section of the README.  Now that we have
+achieved 1.0.0 we will follow semantic versioning and will not break backwards compatibility
+within major point releases.
 EOS
 
   gem.add_dependency "activesupport", ">= 3.2"
