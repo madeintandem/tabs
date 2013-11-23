@@ -95,7 +95,7 @@ module Tabs
     metrics.each { |key| self.drop_metric! key }
   end
 
-  def drop_metric_by_resolution!(key, resolution)
+  def drop_resolution_for_metric!(key, resolution)
     raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     raise ResolutionMissingError.new(resolution) unless Tabs::Resolution.all.include? resolution
     metric = get_metric(key)

@@ -2,7 +2,7 @@
 
 # Tabs
 
-Tabs is a redis-backed metrics tracker that supports counts, sums,
+Tabs is a redis-backed metrics tracker for time-based events that supports counts, sums,
 averages, and min/max, and task based stats sliceable by the minute, hour, day, week, month, and year.
 
 ## Installation
@@ -320,10 +320,10 @@ Tabs.drop_metric!("website-visits")
 
 This will drop all recorded values for the metric so it may not be un-done...be careful.
 
-To drop only a specific resolution for a metric, just call `Tabs#drop_metric_by_resolution!`
+To drop only a specific resolution for a metric, just call `Tabs#drop_resolution_for_metric!`
 
 ```ruby
-Tabs.drop_metric_by_resolution!("website-visits", :minute)
+Tabs.drop_resolution_for_metric!("website-visits", :minute)
 ```
 
 Even more dangerous, you can drop all metrics...be very careful.
@@ -341,6 +341,10 @@ Tabs.configure do |config|
 end
 ```
 
+The expiration date will start counting at the beginning at the end of the given resolution.  Meaning that for a month resolution the given expiration time would start at the end of a given month.  A month resolution metric recorded in January with an expiration of 2 weeks would expire after the 2nd week of February.
+
+*NOTE: You cannot expire task metrics at this time, only counter and
+values.*
 
 ### Configuration
 
@@ -375,7 +379,22 @@ Tabs.configure do |config|
 end
 ```
 
-## Breaking Changes
+#### Prefixing
+
+Many applications use a single Redis instance for a number of uses:
+background jobs, ephemeral data, Tabs, etc.  To avoid key collisions,
+and to make it easier to drop all of your tabs data without affecting
+other parts of your system (or if more than one app shares the Redis
+instance) you can prefix a given 'instance'.
+
+Setting the prefix config option will cause all of the keys that tabs
+stores to use this format:
+
+```
+tabs:#{prefix}:#{key}..."
+```
+
+## Change Log & Breaking Changes
 
 ### v0.6.0
 
@@ -406,6 +425,21 @@ recorded.  In future versions this will be changed to use a MULTI
 statement to simulate a transaction.  Value data that was recorded prior
 to v0.8.2 will not be accessible in this or future versions so please
 continue to use v0.8.1 or lower if that is an issue.
+
+### v1.0.0
+
+_WARNING: Version 1.0.0 is not compatible with previous versions of
+Tabs_
+
+We have made a number of changes related to hour metric keys are stored
+in Redis.  At this point we'll be following semantec versioning and will
+support backwards compatability between major versions.  In this release
+we've added a number of major features:
+
+* Metric expiration
+* Key prefixes
+* Support for unregistering resolutions
+* A number of small numeric fixes
 
 ## Contributing
 

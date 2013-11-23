@@ -177,27 +177,27 @@ describe Tabs do
 
   end
 
-  describe ".drop_metric_by_resolution!" do
+  describe ".drop_resolution_for_metric!" do
     it "raises unknown metric error if metric does not exist" do
-      expect{ Tabs.drop_metric_by_resolution!(:invalid, :minute) }.to raise_error(Tabs::UnknownMetricError)
+      expect{ Tabs.drop_resolution_for_metric!(:invalid, :minute) }.to raise_error(Tabs::UnknownMetricError)
     end
 
     it "raises resolution missing error if resolution not registered" do
       Tabs.create_metric("baz", "value")
-      expect{ Tabs.drop_metric_by_resolution!("baz", :invalid) }.to raise_error(Tabs::ResolutionMissingError)
+      expect{ Tabs.drop_resolution_for_metric!("baz", :invalid) }.to raise_error(Tabs::ResolutionMissingError)
     end
 
     it "does not allow you to call drop_by_resolution if task metric" do
       metric = Tabs.create_metric("baz", "task")
       metric.should_not_receive(:drop_by_resolution!)
-      Tabs.drop_metric_by_resolution!("baz", :minute)
+      Tabs.drop_resolution_for_metric!("baz", :minute)
     end
 
     it "drops the metric by resolution" do
       now = Time.utc(2000,1,1)
       metric = Tabs.create_metric("baz", "value")
       metric.record(42, now)
-      Tabs.drop_metric_by_resolution!("baz", :minute)
+      Tabs.drop_resolution_for_metric!("baz", :minute)
       minute_key = Tabs::Metrics::Value.new("baz").storage_key(:minute, now)
       expect(Tabs::Storage.exists(minute_key)).to be_false
     end
