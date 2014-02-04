@@ -33,6 +33,23 @@ describe Tabs do
 
   end
 
+  describe ".counter_total" do
+
+    it "returns the total for a counter metric" do
+      Tabs.increment_counter("foo")
+      expect(Tabs.counter_total("foo")).to eq 1
+    end
+
+    it "returns the value of the block if given and the metric doesn't exist" do
+      expect(Tabs.counter_total("foo") { 42 }).to eq 42
+    end
+
+    it "raises an UnknownMetricError if no block is given and the metric does not exist" do
+      expect { Tabs.counter_total("foo") }.to raise_error Tabs::UnknownMetricError
+    end
+
+  end
+
   describe ".get_metric" do
 
     it "returns the expected metric object" do

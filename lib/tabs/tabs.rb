@@ -59,7 +59,13 @@ module Tabs
   end
 
   def counter_total(key)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
+    unless metric_exists?(key)
+      if block_given?
+        return yield
+      else
+        raise UnknownMetricError.new("Unknown metric: #{key}")
+      end
+    end
     raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
     get_metric(key).total
   end
