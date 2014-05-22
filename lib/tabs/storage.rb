@@ -55,6 +55,10 @@ module Tabs
       redis.incr(tabs_key(key))
     end
 
+    def decr(key)
+      redis.decr(tabs_key(key))
+    end
+
     def rpush(key, value)
       redis.rpush(tabs_key(key), value)
     end

@@ -34,6 +34,35 @@ describe Tabs::Metrics::Counter do
 
   end
 
+  describe "decrementing stats" do
+
+    before { Timecop.freeze(now) }
+
+    it "decrements the value for the expected periods" do
+      metric.increment
+      metric.decrement
+      time = Time.utc(now.year, now.month, now.day, now.hour)
+      stats = metric.stats(((now - 2.hours)..(now + 4.hours)), :hour)
+      expect(stats).to include({ "timestamp" => time, "count" => 0 })
+    end
+
+    it "applys the decrement to the specified timestamp if one is supplied" do
+      time = Time.utc(now.year, now.month, now.day, now.hour) - 2.hours
+      metric.increment(time)
+      metric.decrement(time)
+      stats = metric.stats(((now - 3.hours)..now), :hour)
+      expect(stats).to include({ "timestamp" => time, "count" => 0 })
+    end
+
+    it "raises ResolutionMissingError if unregistered resolution requested" do
+      time = Time.utc(now.year, now.month, now.day, now.hour) - 2.hours
+      metric.decrement(time)
+      Tabs::Resolution.unregister(:hour)
+      expect { metric.stats(((now - 3.hours)..now), :hour) }.to raise_error(Tabs::ResolutionMissingError)
+    end
+
+  end
+
   describe "total count" do
 
     it "is incremented every time regardless of resolution" do
