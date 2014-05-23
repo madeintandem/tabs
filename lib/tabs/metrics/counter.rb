@@ -75,12 +75,24 @@ module Tabs
 
       def decrement_resolution(resolution, timestamp)
         store_key = storage_key(resolution, timestamp)
-        decr(store_key)
+        val = decr(store_key)
+
+         if !Tabs::Config.negative_metric && val < 0
+          return increment_resolution(resolution, timestamp)
+        end
+
         Tabs::Resolution.expire(resolution, store_key, timestamp)
+        val
       end
 
       def decrement_total
-        decr("stat:counter:#{key}:total")
+        val = decr("stat:counter:#{key}:total")
+
+        if !Tabs::Config.negative_metric && val < 0
+         val = increment_total
+        end
+
+        val
       end
     end
   end

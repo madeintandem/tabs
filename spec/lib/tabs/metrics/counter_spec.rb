@@ -61,6 +61,25 @@ describe Tabs::Metrics::Counter do
       expect { metric.stats(((now - 3.hours)..now), :hour) }.to raise_error(Tabs::ResolutionMissingError)
     end
 
+    context "Config.negative_metric = false" do
+      it "not decrements the value if val is negative" do
+        Tabs::Config.negative_metric = false
+        metric.decrement
+        time = Time.utc(now.year, now.month, now.day, now.hour)
+        stats = metric.stats(((now - 2.hours)..(now + 4.hours)), :hour)
+        expect(stats).to include({ "timestamp" => time, "count" => 0 })
+      end
+    end
+
+    context "Config.negative_metric = true" do
+      it "decrements the value if val is negative" do
+        Tabs::Config.negative_metric = true
+        metric.decrement
+        time = Time.utc(now.year, now.month, now.day, now.hour)
+        stats = metric.stats(((now - 2.hours)..(now + 4.hours)), :hour)
+        expect(stats).to include({ "timestamp" => time, "count" => -1 })
+      end
+    end
   end
 
   describe "total count" do

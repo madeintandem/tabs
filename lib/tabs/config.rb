@@ -2,6 +2,10 @@ module Tabs
   module Config
     extend self
 
+    attr_accessor :negative_metric
+
+    @negative_metric = false
+
     def decimal_precision
       @decimal_precision ||= 5
     end
