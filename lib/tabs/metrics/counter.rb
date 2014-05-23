@@ -73,15 +73,15 @@ module Tabs
         incr("stat:counter:#{key}:total")
       end
 
-        def decrement_resolution(resolution, timestamp)
-          store_key = storage_key(resolution, timestamp)
-          decr(store_key)
-          Tabs::Resolution.expire(resolution, store_key, timestamp)
-        end
+      def decrement_resolution(resolution, timestamp)
+        store_key = storage_key(resolution, timestamp)
+        decr(store_key)
+        Tabs::Resolution.expire(resolution, store_key, timestamp)
+      end
 
-        def decrement_total
-          decr("stat:counter:#{key}:total")
-        end
+      def decrement_total
+        decr("stat:counter:#{key}:total")
+      end
     end
   end
 end
