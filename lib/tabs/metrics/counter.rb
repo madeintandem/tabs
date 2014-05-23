@@ -19,6 +19,15 @@ module Tabs
         true
       end
 
+      def decrement(timestamp=Time.now)
+        timestamp.utc
+        Tabs::Resolution.all.each do |resolution|
+          decrement_resolution(resolution, timestamp)
+        end
+        decrement_total
+        true
+      end
+
       def stats(period, resolution)
         timestamps = timestamp_range period, resolution
         keys = timestamps.map do |timestamp|
@@ -64,6 +73,27 @@ module Tabs
         incr("stat:counter:#{key}:total")
       end
 
+      def decrement_resolution(resolution, timestamp)
+        store_key = storage_key(resolution, timestamp)
+        val = decr(store_key)
+
+         if !Tabs::Config.negative_metric && val < 0
+          return increment_resolution(resolution, timestamp)
+        end
+
+        Tabs::Resolution.expire(resolution, store_key, timestamp)
+        val
+      end
+
+      def decrement_total
+        val = decr("stat:counter:#{key}:total")
+
+        if !Tabs::Config.negative_metric && val < 0
+         val = increment_total
+        end
+
+        val
+      end
     end
   end
 end
