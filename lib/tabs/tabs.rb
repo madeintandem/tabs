@@ -9,7 +9,7 @@ module Tabs
   class ResolutionMissingError < StandardError; end
 
   METRIC_TYPES = ["counter", "value", "task"]
-
+  FIND_OR_CREATE_MUTEX = Mutex.new
   def configure
     yield(Config)
   end
@@ -23,26 +23,29 @@ module Tabs
   end
 
   def increment_counter(key, timestamp=Time.now)
-    create_metric(key, "counter") unless metric_exists?(key)
-    raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
-    get_metric(key).increment(timestamp)
+    get_or_create_metric(key,"counter").increment(timestamp)
   end
 
   def record_value(key, value, timestamp=Time.now)
-    create_metric(key, "value") unless metric_exists?(key)
-    raise MetricTypeMismatchError.new("Only value metrics can record a value") unless metric_type(key) == "value"
-    get_metric(key).record(value, timestamp)
+    get_or_create_metric(key,"value").record(value, timestamp)
   end
 
   def start_task(key, token, timestamp=Time.now)
-    create_metric(key, "task")
-    raise MetricTypeMismatchError.new("Only task metrics can start a task") unless metric_type(key) == "task"
-    get_metric(key).start(token, timestamp)
+    get_or_create_metric(key,"task").start(token, timestamp)
   end
 
   def complete_task(key, token, timestamp=Time.now)
-    raise MetricTypeMismatchError.new("Only task metrics can complete a task") unless metric_type(key) == "task"
-    get_metric(key).complete(token, timestamp)
+    get_metric(key,"task").complete(token, timestamp)
+  end
+
+  def get_or_create_metric(key,type)
+    FIND_OR_CREATE_MUTEX.synchronize do
+      if metric_exists?(key)
+        return get_metric(key,type)
+      else
+        return create_metric(key,type)
+      end
+    end
   end
 
   def create_metric(key, type)
@@ -52,8 +55,9 @@ module Tabs
     metric_klass(type).new(key)
   end
 
-  def get_metric(key)
+  def get_metric(key,type=nil)
     raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
+    raise MetricTypeMismatchError.new("Metric types do not match") unless type.blank? || metric_type(key) == type
     type = hget("metrics", key)
     metric_klass(type).new(key)
   end
@@ -66,19 +70,16 @@ module Tabs
         raise UnknownMetricError.new("Unknown metric: #{key}")
       end
     end
-    raise MetricTypeMismatchError.new("Only counter metrics can be incremented") unless metric_type(key) == "counter"
-    get_metric(key).total
+    get_metric(key,"counter").total
   end
 
   def get_stats(key, period, resolution)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     metric = get_metric(key)
     metric.stats(period, resolution)
   end
 
   def metric_type(key)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
-    hget "metrics", key
+    hget("metrics", key) or (raise UnknownMetricError.new("Unknown metric: #{key}"))
   end
 
   def list_metrics
@@ -90,7 +91,6 @@ module Tabs
   end
 
   def drop_metric!(key)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     metric = get_metric(key)
     metric.drop!
     hdel "metrics", key
@@ -102,7 +102,6 @@ module Tabs
   end
 
   def drop_resolution_for_metric!(key, resolution)
-    raise UnknownMetricError.new("Unknown metric: #{key}") unless metric_exists?(key)
     raise ResolutionMissingError.new(resolution) unless Tabs::Resolution.all.include? resolution
     metric = get_metric(key)
     metric.drop_by_resolution!(resolution) unless metric_type(key) == "task"
