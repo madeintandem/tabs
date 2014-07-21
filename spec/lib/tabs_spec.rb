@@ -33,6 +33,19 @@ describe Tabs do
 
   end
 
+  describe ".get_or_create_metric" do
+    it "creates the metric if it does not exist" do
+      expect(Tabs).to receive(:create_metric).with("foo","counter")
+      Tabs.get_or_create_metric("foo","counter")
+    end
+
+    it "returns the existing metric if metric exists" do
+      Tabs.create_metric("foo","counter")
+      expect(Tabs).to receive(:get_metric).with("foo","counter")
+      Tabs.get_or_create_metric("foo","counter")
+    end
+  end
+
   describe ".counter_total" do
 
     it "returns the total for a counter metric" do
@@ -54,9 +67,13 @@ describe Tabs do
 
     it "returns the expected metric object" do
       Tabs.create_metric("foo", "counter")
-      expect(Tabs.get_metric("foo")).to be_a_kind_of(Tabs::Metrics::Counter)
+      expect(Tabs.get_metric("foo","counter")).to be_a_kind_of(Tabs::Metrics::Counter)
     end
 
+    it "raises an MetricTypeMismatchError when metric types do not match" do
+      Tabs.create_metric("foo","counter")
+      lambda { Tabs.get_metric("foo","task") }.should raise_error Tabs::MetricTypeMismatchError
+    end
   end
 
   describe ".list_metrics" do
