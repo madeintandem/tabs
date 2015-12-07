@@ -27,8 +27,8 @@ describe Tabs::Storage do
     let(:stubbed_redis) { double("redis").as_null_object }
 
     before do
-      subject.stub(redis: stubbed_redis)
-      subject.should_receive(:tabs_key).at_least(:once).and_call_original
+      allow(subject).to receive(:redis).and_return(stubbed_redis)
+      expect(subject).to receive(:tabs_key).at_least(:once).and_call_original
     end
 
     it "#exists calls exists with the expected key" do
@@ -67,7 +67,7 @@ describe Tabs::Storage do
     end
 
     it "#del_by_prefix" do
-      stubbed_redis.stub(keys: ["foo:a", "foo:b"])
+      allow(stubbed_redis).to receive(:keys).and_return(["foo:a", "foo:b"])
       subject.del_by_prefix("foo")
       expect(stubbed_redis).to have_received(:del).with("foo:a", "foo:b")
     end
@@ -93,7 +93,7 @@ describe Tabs::Storage do
     end
 
     it "#smembers_all" do
-      stubbed_redis.should_receive(:pipelined).and_yield
+      expect(stubbed_redis).to receive(:pipelined).and_yield
       subject.smembers_all("foo", "bar")
       expect(stubbed_redis).to have_received(:smembers).with("tabs:foo")
       expect(stubbed_redis).to have_received(:smembers).with("tabs:bar")

@@ -14,14 +14,14 @@ describe Tabs::Metrics::Task do
     let(:time) { Time.now }
 
     it "calls start on the given token" do
-      Tabs::Metrics::Task::Token.should_receive(:new).with(token_1, "foo").and_return(token)
-      token.should_receive(:start)
+      expect(Tabs::Metrics::Task::Token).to receive(:new).with(token_1, "foo").and_return(token)
+      expect(token).to receive(:start)
       metric.start(token_1)
     end
 
     it "passes through the specified timestamp" do
-      Tabs::Metrics::Task::Token.stub(new: token)
-      token.should_receive(:start).with(time)
+      allow(Tabs::Metrics::Task::Token).to receive(:new).and_return(token)
+      expect(token).to receive(:start).with(time)
       metric.start(token_1, time)
     end
 
@@ -33,19 +33,19 @@ describe Tabs::Metrics::Task do
     let(:time) { Time.now }
 
     it "calls complete on the given token" do
-      Tabs::Metrics::Task::Token.should_receive(:new).with(token_1, "foo").and_return(token)
-      token.should_receive(:complete)
+      expect(Tabs::Metrics::Task::Token).to receive(:new).with(token_1, "foo").and_return(token)
+      expect(token).to receive(:complete)
       metric.complete(token_1)
     end
 
     it "passes through the specified timestamp" do
-      Tabs::Metrics::Task::Token.stub(new: token)
-      token.should_receive(:complete).with(time)
+      allow(Tabs::Metrics::Task::Token).to receive(:new).and_return(token)
+      expect(token).to receive(:complete).with(time)
       metric.complete(token_1, time)
     end
 
     it "raises an UnstartedTaskMetricError if the metric has not yet been started" do
-      lambda { metric.complete("foobar") }.should raise_error(Tabs::Metrics::Task::UnstartedTaskMetricError)
+      expect { metric.complete("foobar") }.to raise_error(Tabs::Metrics::Task::UnstartedTaskMetricError)
     end
 
   end
