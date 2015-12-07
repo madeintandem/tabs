@@ -113,13 +113,13 @@ describe Tabs::Metrics::Value do
 
     it "deletes all resolution count keys" do
       @count_keys.each do |key|
-        expect(exists(key)).to be_false
+        expect(exists(key)).to be_falsey
       end
     end
 
     it "deletes all resolution key collection keys" do
       Tabs::Resolution.all.each do |res|
-        expect(exists("stat:value:foo:keys:#{res}")).to be_false
+        expect(exists("stat:value:foo:keys:#{res}")).to be_falsey
       end
     end
 
