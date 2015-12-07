@@ -20,7 +20,7 @@ describe Tabs::Resolutionable do
 
     ["serialize", "deserialize", "from_seconds", "add", "normalize"].each do |method|
       it "are raised when the #{method} method is not implemented" do
-        expect { TestResolution.send(method) }.to raise_error
+        expect { TestResolution.send(method) }.to raise_error(RuntimeError)
       end
     end
 

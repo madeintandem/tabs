@@ -23,7 +23,7 @@ describe Tabs::Resolution do
       end
 
       it "raises an error when method not implemented" do
-        expect{BadlyFormedResolution.normalize}.to raise_error
+        expect{BadlyFormedResolution.normalize}.to raise_error(RuntimeError)
       end
 
       it "disregards already registered resolutions" do
