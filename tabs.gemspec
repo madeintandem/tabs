@@ -27,7 +27,7 @@ within major point releases.
 EOS
 
   gem.add_dependency "activesupport", ">= 3.2"
-  gem.add_dependency "redis", "~> 3.0"
+  gem.add_dependency "redis", ">= 3.0.0"
 
   gem.add_development_dependency "pry"
   gem.add_development_dependency "pry-nav"
