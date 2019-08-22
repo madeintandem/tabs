@@ -73,11 +73,11 @@ describe Tabs do
 
     it "returns true if the metric exists" do
       Tabs.create_metric("foo", "counter")
-      expect(Tabs.metric_exists?("foo")).to be_true
+      expect(Tabs.metric_exists?("foo")).to be_truthy
     end
 
     it "returns false if the metric does not exist" do
-      expect(Tabs.metric_exists?("foo")).to be_false
+      expect(Tabs.metric_exists?("foo")).to be_falsey
     end
 
   end
@@ -95,7 +95,7 @@ describe Tabs do
 
     it "results in metric_exists? returning false" do
       Tabs.drop_metric!("foo")
-      expect(Tabs.metric_exists?("foo")).to be_false
+      expect(Tabs.metric_exists?("foo")).to be_falsey
     end
 
     it "calls drop! on the metric" do
@@ -113,8 +113,8 @@ describe Tabs do
       Tabs.create_metric("foo", "counter")
       Tabs.create_metric("bar", "value")
       Tabs.drop_all_metrics!
-      expect(Tabs.metric_exists?("foo")).to be_false
-      expect(Tabs.metric_exists?("bar")).to be_false
+      expect(Tabs.metric_exists?("foo")).to be_falsey
+      expect(Tabs.metric_exists?("bar")).to be_falsey
     end
 
   end
@@ -127,9 +127,9 @@ describe Tabs do
     end
 
     it "creates the metric if it doesn't exist" do
-      expect(Tabs.metric_exists?("foo")).to be_false
+      expect(Tabs.metric_exists?("foo")).to be_falsey
       lambda { Tabs.increment_counter("foo") }.should_not raise_error
-      expect(Tabs.metric_exists?("foo")).to be_true
+      expect(Tabs.metric_exists?("foo")).to be_truthy
     end
 
     it "calls increment on the metric" do
@@ -144,9 +144,9 @@ describe Tabs do
   describe ".record_value" do
 
     it "creates the metric if it doesn't exist" do
-      expect(Tabs.metric_exists?("foo")).to be_false
+      expect(Tabs.metric_exists?("foo")).to be_falsey
       lambda { Tabs.record_value("foo", 38) }.should_not raise_error
-      expect(Tabs.metric_exists?("foo")).to be_true
+      expect(Tabs.metric_exists?("foo")).to be_truthy
     end
 
     it "raises a Tabs::MetricTypeMismatchError if the metric is the wrong type" do
@@ -216,7 +216,7 @@ describe Tabs do
       metric.record(42, now)
       Tabs.drop_resolution_for_metric!("baz", :minute)
       minute_key = Tabs::Metrics::Value.new("baz").storage_key(:minute, now)
-      expect(Tabs::Storage.exists(minute_key)).to be_false
+      expect(Tabs::Storage.exists(minute_key)).to be_falsey
     end
   end
 
